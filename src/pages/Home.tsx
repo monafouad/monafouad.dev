@@ -14,7 +14,7 @@ function Home() {
     <>
       {/* HERO */}
       <section id="top" className="px-6 pt-28 pb-24 sm:px-10 sm:pt-40 sm:pb-32">
-        <div className="reveal mx-auto max-w-5xl">
+        <div className="reveal mf-stagger mx-auto max-w-5xl">
           <p className="mf-eyebrow">Design Engineer · Zürich</p>
           <h1 className="mf-h1 mt-8 text-4xl leading-[1.06] sm:text-6xl md:text-7xl md:leading-[1.02]">
             I build the parts of a product
@@ -22,10 +22,14 @@ function Home() {
             <em className="mf-em">feel</em>.
           </h1>
 
+          {/* DRAFT(mona): AI-domain claim, option B from the drafts. Edit
+              freely; the first two sentences are your original copy. */}
           <p className="mf-muted mt-9 max-w-xl text-base leading-relaxed sm:text-lg">
             Fifteen years of interface craft. Most recently: Cicla, a
             cycle-aware iOS product I designed, built, and shipped to
-            TestFlight on my own.
+            TestFlight on my own. Alongside it: AI product interfaces, where
+            streaming, voice, and model output meet an interface that
+            can&rsquo;t assume the answer.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4 text-sm sm:text-base">
@@ -38,19 +42,25 @@ function Home() {
             <a href={LINKEDIN_URL} className="mf-link">
               LinkedIn
             </a>
+            <span aria-hidden="true" className="mf-dot-sep">
+              ●
+            </span>
+            <a href="/cv" className="mf-link">
+              CV
+            </a>
           </div>
 
           <p className="mf-muted mt-12 inline-flex items-center text-xs font-medium uppercase tracking-[0.22em]">
             <span className="mf-dot-live mr-3 inline-block h-1.5 w-1.5 rounded-full" />
-            Open to design engineer &amp; AI product engineer roles · Zürich or
-            remote EU
+            Open to design engineer &amp; AI product engineer roles, permanent
+            or contract · Zürich or remote EU
           </p>
         </div>
       </section>
 
       {/* ABOUT */}
       <section className="mf-soft px-6 py-24 sm:px-10 sm:py-32">
-        <div className="reveal mx-auto max-w-4xl">
+        <div className="reveal mf-stagger mx-auto max-w-4xl">
           <p className="mf-eyebrow">About</p>
           <p className="mf-statement mt-8 text-2xl leading-[1.3] sm:text-3xl md:text-4xl md:leading-[1.25]">
             I work between design and engineering, taking a vague product idea
@@ -61,32 +71,19 @@ function Home() {
               small calls that make it cohere are mine.
             </span>
           </p>
-          <div className="mt-10">
-            <Link
-              to="/about"
-              className="mf-textlink group inline-flex items-center gap-2 text-base font-medium"
-            >
-              More about me
-              <span aria-hidden="true" className="mf-arrow">
-                →
-              </span>
-            </Link>
-          </div>
+         
         </div>
       </section>
 
       {/* CICLA, FEATURED TEASER */}
       <section className="px-6 py-24 sm:px-10 sm:py-32">
         <div className="mx-auto max-w-5xl">
-          <div className="reveal mb-10 flex items-baseline justify-between gap-6">
+          <div className="reveal mb-10">
             <p className="mf-eyebrow">Selected work</p>
-            <span className="mf-dim text-xs font-medium tabular-nums">
-              Since 2026
-            </span>
           </div>
 
           <div className="grid items-center gap-14 md:grid-cols-2 md:gap-16">
-            <div className="reveal">
+            <div className="reveal mf-stagger">
               <h2 className="mf-wordmark text-5xl leading-[0.95] sm:text-6xl">
                 Cicla
               </h2>
@@ -135,6 +132,56 @@ function Home() {
                 loading="lazy"
               />
             </figure>
+          </div>
+        </div>
+      </section>
+
+      {/* LAB, supporting evidence */}
+      <section className="mf-hairline border-t px-6 py-20 sm:px-10 sm:py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="reveal mf-stagger">
+            <p className="mf-eyebrow">Lab</p>
+            <h2 className="mf-h3 mt-6 max-w-2xl text-2xl leading-[1.15] sm:text-3xl">
+              The states nobody <em className="mf-em">builds</em>.
+            </h2>
+            {/* DRAFT(mona): trimmed option C, the claim beside its evidence.
+                Edit freely. */}
+            <p className="mf-muted mt-5 max-w-xl text-[0.97rem] leading-relaxed sm:text-base">
+              AI product interfaces are their own discipline: streaming that
+              doesn&rsquo;t jump, output nobody can predict. The Lab is where
+              I work on those states.
+            </p>
+            <div className="mt-8 grid gap-8 sm:grid-cols-2">
+              <div>
+                <h3 className="mf-ink text-base font-semibold">
+                  Streaming output that doesn&rsquo;t jump
+                </h3>
+                <p className="mf-muted mt-2 text-sm leading-relaxed">
+                  Token streaming with consent-based scroll anchoring and
+                  markdown that renders mid-parse.
+                </p>
+              </div>
+              <div>
+                <h3 className="mf-ink text-base font-semibold">
+                  Cicla Interface System
+                </h3>
+                <p className="mf-muted mt-2 text-sm leading-relaxed">
+                  The production components behind Cicla, documented in
+                  Storybook.
+                </p>
+              </div>
+            </div>
+            <div className="mt-9">
+              <Link
+                to="/lab"
+                className="mf-textlink group inline-flex items-center gap-2 text-base font-medium"
+              >
+                Everything in the Lab
+                <span aria-hidden="true" className="mf-arrow">
+                  →
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

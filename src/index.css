@@ -117,12 +117,16 @@
 .mf-link {
   font-weight: 500;
   color: var(--mf-text);
-  border-bottom: 1.5px solid var(--mf-accent);
   padding-bottom: 2px;
+  background-image: linear-gradient(var(--mf-accent), var(--mf-accent));
+  background-repeat: no-repeat;
+  background-size: 100% 1.5px;
+  background-position: left bottom;
   transition: opacity 0.2s ease;
 }
 .mf-link:hover {
-  opacity: 0.6;
+  opacity: 0.75;
+  animation: mf-underline-redraw 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .mf-textlink {
   font-weight: 500;
@@ -133,8 +137,35 @@
   opacity: 0.6;
 }
 .mf-cta-underline {
-  border-bottom: 1.5px solid var(--mf-accent);
   padding-bottom: 3px;
+  background-image: linear-gradient(var(--mf-accent), var(--mf-accent));
+  background-repeat: no-repeat;
+  background-size: 100% 1.5px;
+  background-position: left bottom;
+}
+.group:hover .mf-cta-underline,
+.mf-cta-underline:hover {
+  animation: mf-underline-redraw 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* The underline lifts out to the right, then redraws in from the left. */
+@keyframes mf-underline-redraw {
+  0% {
+    background-size: 100% 1.5px;
+    background-position: right bottom;
+  }
+  45% {
+    background-size: 0 1.5px;
+    background-position: right bottom;
+  }
+  55% {
+    background-size: 0 1.5px;
+    background-position: left bottom;
+  }
+  100% {
+    background-size: 100% 1.5px;
+    background-position: left bottom;
+  }
 }
 .mf-arrow {
   color: var(--mf-accent);
@@ -688,6 +719,63 @@
   transform: translateY(20px);
 }
 
+/* Staggered variant: the container stays put; its children cascade in
+   80ms apart. Used on the hero (as a load entrance) and on key sections. */
+.js .reveal.mf-stagger:not(.is-in) {
+  opacity: 1;
+  transform: none;
+}
+.js .mf-stagger > * {
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: calc(var(--st, 0) * 80ms);
+}
+.js .mf-stagger:not(.is-in) > * {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.js .mf-stagger > :nth-child(1) {
+  --st: 0;
+}
+.js .mf-stagger > :nth-child(2) {
+  --st: 1;
+}
+.js .mf-stagger > :nth-child(3) {
+  --st: 2;
+}
+.js .mf-stagger > :nth-child(4) {
+  --st: 3;
+}
+.js .mf-stagger > :nth-child(5) {
+  --st: 4;
+}
+.js .mf-stagger > :nth-child(6) {
+  --st: 5;
+}
+
+/* Route transitions: a quiet fade-up on navigation. */
+.mf-route {
+  animation: mf-route-in 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes mf-route-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* The availability dot breathes, slowly. */
+.mf-dot-live {
+  animation: mf-breathe 3.2s ease-in-out infinite;
+}
+@keyframes mf-breathe {
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -699,6 +787,23 @@
   .js .reveal:not(.is-in) {
     opacity: 1;
     transform: none;
+  }
+  .js .mf-stagger > * {
+    transition: none;
+  }
+  .js .mf-stagger:not(.is-in) > * {
+    opacity: 1;
+    transform: none;
+  }
+  .mf-route {
+    animation: none;
+  }
+  .mf-dot-live {
+    animation: none;
+  }
+  .mf-link,
+  .mf-cta-underline {
+    animation: none;
   }
   .mf-shot,
   .mf-arrow,

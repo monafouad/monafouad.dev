@@ -305,7 +305,7 @@ function Cicla() {
             to a health floor for calories and protein that deliberately wins
             over any weight goal.
           </p>
-          <div className="mt-8">
+          {/* <div className="mt-8">
             <Link
               to="/notes/guidance-without-overclaiming"
               className="mf-accent-deep group inline-flex items-center gap-2 text-base font-medium"
@@ -317,7 +317,7 @@ function Cicla() {
                 →
               </span>
             </Link>
-          </div>
+          </div> */}
         </div>
       </section>
 

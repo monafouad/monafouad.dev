@@ -18,7 +18,7 @@ export function Meta({
 export function Contact() {
   return (
     <section className="px-6 py-20 sm:px-10 sm:py-28">
-      <div className="reveal mx-auto max-w-3xl text-center">
+      <div className="reveal mf-stagger mx-auto max-w-3xl text-center">
         <p className="mf-eyebrow">Let&rsquo;s talk</p>
         <h2 className="mf-h2 mt-8 text-3xl leading-[1.1] sm:text-4xl md:text-5xl">
           Building something that could use a{' '}

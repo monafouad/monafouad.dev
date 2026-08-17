@@ -3,6 +3,7 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import { EMAIL, LINKEDIN_URL } from './content'
 import About from './pages/About'
 import Cicla from './pages/Cicla'
+import CvRedirect from './pages/CvRedirect'
 import GuidanceNote from './pages/GuidanceNote'
 import Home from './pages/Home'
 import Lab from './pages/Lab'
@@ -19,6 +20,7 @@ function ScrollToTop() {
 }
 
 function App() {
+  const { pathname } = useLocation()
   return (
     <div className="mf-page min-h-screen antialiased">
       <ScrollToTop />
@@ -51,27 +53,37 @@ function App() {
         </div>
       </nav>
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/cicla" element={<Cicla />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/notes" element={<Notes />} />
-        <Route
-          path="/notes/guidance-without-overclaiming"
-          element={<GuidanceNote />}
-        />
-        <Route path="/lab" element={<Lab />} />
-        <Route path="*" element={<Home />} />
-      </Routes>
+      {/* Keyed by path: each page enters with a quiet fade-up. */}
+      <div key={pathname} className="mf-route">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/cicla" element={<Cicla />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/notes" element={<Notes />} />
+          <Route
+            path="/notes/guidance-without-overclaiming"
+            element={<GuidanceNote />}
+          />
+          <Route path="/lab" element={<Lab />} />
+          <Route path="/cv" element={<CvRedirect />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </div>
 
       {/* FOOTER */}
       <footer className="mf-hairline border-t px-6 py-10 sm:px-10">
         <div className="mf-dim mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-8 gap-y-3 text-xs">
-          <span>Mona Fouad · Zürich / remote EU</span>
-          <span>Open to design engineer &amp; AI product engineer roles</span>
+          <span>Mona Fouad · Zürich / remote</span>
+          <span>
+            Open to design engineer &amp; AI product engineer roles, permanent
+            or contract
+          </span>
           <span className="flex items-center gap-5">
             <a href={`mailto:${EMAIL}`} className="mf-textlink">
               Email
+            </a>
+            <a href="/cv" className="mf-textlink">
+              CV
             </a>
             <a href={LINKEDIN_URL} className="mf-textlink">
               LinkedIn

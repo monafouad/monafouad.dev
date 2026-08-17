@@ -1,3 +1,6 @@
 {
+  "redirects": [
+    { "source": "/cv", "destination": "/CV_Mona_Fouad_Design_Engineer.pdf" }
+  ],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

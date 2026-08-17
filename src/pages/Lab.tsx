@@ -124,7 +124,7 @@ function Lab() {
               >
                 <img
                   src="/lab/cicla-interface-system.webp"
-                  alt="The Cicla Interface System Storybook, open on its Overview page: a phase-tinted hero reading 'The interface behind Cicla', with Foundations, Components and Cicla Patterns in the sidebar"
+                  alt="The Cicla Interface System Storybook, open on its Overview page in the ovulatory green phase: a hero reading 'The interface behind Cicla', with Foundations, Components and Cicla Patterns in the sidebar"
                   loading="lazy"
                 />
                 <span className="mf-shotlink-hint" aria-hidden="true">
