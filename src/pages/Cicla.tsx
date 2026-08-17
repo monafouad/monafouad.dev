@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-// import { Link } from 'react-router-dom'
 import { Contact, Meta } from '../components'
 import { CycleRing } from '../components/lab/CycleRing'
 import { FlashCompare } from '../components/lab/FlashCompare'
