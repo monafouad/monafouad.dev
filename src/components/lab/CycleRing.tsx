@@ -368,7 +368,7 @@ export function CycleRing() {
         </p>
       </div>
 
-      <p className="mf-dim text-xs leading-relaxed">
+      <p className="mf-dim mf-cring-caption">
         Outer ring: {current.label.toLowerCase()} ({current.length} days) ·
         middle: {RING_CYCLES[1].label.toLowerCase()} ({RING_CYCLES[1].length})
         · inner: {RING_CYCLES[2].label.toLowerCase()} ({RING_CYCLES[2].length}
@@ -378,7 +378,7 @@ export function CycleRing() {
       <div id="mf-cring-panel" hidden={!inspected}>
         {inspected && inspectedCycle && (
           <div className="mf-cring-panel">
-            <p className="mf-label mf-label-accent mb-2">
+            <p className="mf-label mf-label-accent mf-cring-label">
               {inspectedCycle.label} · Day {inspected.day} ·{' '}
               {phaseLabelOf(phaseForDay(inspected.day, inspectedCycle.length))}
             </p>
@@ -389,12 +389,12 @@ export function CycleRing() {
                 ))}
               </ul>
             ) : (
-              <p className="mf-muted text-sm">Nothing logged this day.</p>
+              <p className="mf-muted mf-cring-empty">Nothing logged this day.</p>
             )}
-            <p className="mf-dim mt-3 text-xs">Synthetic sample data.</p>
+            <p className="mf-dim mf-micronote">Synthetic sample data.</p>
             <button
               type="button"
-              className="mf-lab-chip mt-3"
+              className="mf-lab-chip mf-cring-close"
               onClick={() => setInspected(null)}
             >
               Close
@@ -415,7 +415,7 @@ export function CycleRing() {
         </button>
         <div id="mf-cring-table" hidden={!tableOpen} className="mf-cring-table">
           <table>
-            <caption className="sr-only">
+            <caption className="mf-sr-only">
               The same three cycles as a linear table
             </caption>
             <thead>

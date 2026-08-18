@@ -27,37 +27,37 @@ function Notes() {
 
   return (
     <>
-      <section className="px-6 pt-20 pb-24 sm:px-10 sm:pt-28 sm:pb-32">
-        <div className="mx-auto max-w-4xl">
-          <div className="reveal">
+      <section className="mf-section mf-section-lead">
+        <div className="mf-shell-narrow">
+          <div className="mf-reveal">
             <p className="mf-eyebrow">Notes</p>
-            <h1 className="mf-h1 mt-8 max-w-3xl text-3xl leading-[1.1] sm:text-4xl md:text-5xl">
+            <h1 className="mf-h1 mf-title-display mf-measure-max">
               Short writing on decisions{' '}
               <em className="mf-em">worth keeping</em>.
             </h1>
-            <p className="mf-muted mt-8 max-w-xl text-base leading-relaxed sm:text-lg">
+            <p className="mf-muted mf-lede mf-measure mf-notes-lede">
               The thinking behind the work, one problem at a time. Infrequent
               and specific.
             </p>
           </div>
 
-          <div className="mf-hairline mt-16 border-t">
+          <div className="mf-note-list">
             {notes.map((note) => (
               <Link
                 key={note.to}
                 to={note.to}
-                className="mf-hairline group block border-b py-10"
+                className="mf-note-card"
               >
-                <p className="mf-dim text-xs font-medium uppercase tracking-[0.18em]">
+                <p className="mf-dim mf-note-date">
                   {note.date}
                 </p>
-                <h2 className="mf-h3 mt-4 text-2xl leading-[1.15] sm:text-3xl">
+                <h2 className="mf-h3 mf-title-item mf-note-title">
                   {note.title}
                 </h2>
-                <p className="mf-muted mt-4 max-w-2xl text-[0.97rem] leading-relaxed">
+                <p className="mf-muted mf-note-line">
                   {note.line}
                 </p>
-                <p className="mf-accent-deep mt-5 inline-flex items-center gap-2 text-sm font-medium">
+                <p className="mf-accent-deep mf-cta mf-note-more">
                   Read the note
                   <span aria-hidden="true" className="mf-arrow">
                     →

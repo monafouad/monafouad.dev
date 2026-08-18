@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 
-// Reveal-on-scroll: lift + fade each .reveal element in once it enters view.
-// Call from every page component so newly mounted routes get observed.
+// Reveal-on-scroll: lift + fade each .mf-reveal element in once it enters
+// view. Call from every page component so newly mounted routes get observed.
 export function useReveal() {
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal'))
+    const els = Array.from(
+      document.querySelectorAll<HTMLElement>('.mf-reveal')
+    )
     if (!('IntersectionObserver' in globalThis)) {
       els.forEach((el) => el.classList.add('is-in'))
       return

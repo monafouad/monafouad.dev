@@ -9,31 +9,28 @@ export function Meta({
 }) {
   return (
     <div>
-      <dt className="mf-label mf-label-dim mb-1.5">{label}</dt>
-      <dd className="font-medium">{value}</dd>
+      <dt className="mf-label mf-label-dim mf-meta-label">{label}</dt>
+      <dd className="mf-meta-value">{value}</dd>
     </div>
   )
 }
 
 export function Contact() {
   return (
-    <section className="px-6 py-20 sm:px-10 sm:py-28">
-      <div className="reveal mf-stagger mx-auto max-w-3xl text-center">
+    <section className="mf-section mf-section-cta">
+      <div className="mf-reveal mf-stagger mf-shell-tight mf-center">
         <p className="mf-eyebrow">Let&rsquo;s talk</p>
-        <h2 className="mf-h2 mt-8 text-3xl leading-[1.1] sm:text-4xl md:text-5xl">
+        <h2 className="mf-h2 mf-title-display">
           Building something that could use a{' '}
           <em className="mf-em">design engineer</em>?
         </h2>
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-          <a
-            href={`mailto:${EMAIL}`}
-            className="mf-pill-dark rounded-full px-7 py-3.5 text-sm font-medium"
-          >
+        <div className="mf-contact-actions">
+          <a href={`mailto:${EMAIL}`} className="mf-pill mf-pill-dark">
             {EMAIL}
           </a>
           <a
             href={LINKEDIN_URL}
-            className="mf-pill-outline group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium"
+            className="mf-pill mf-pill-outline mf-cta"
           >
             LinkedIn
             <span aria-hidden="true" className="mf-arrow">

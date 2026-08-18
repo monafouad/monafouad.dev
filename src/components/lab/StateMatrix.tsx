@@ -32,7 +32,7 @@ const MATRIX_STATES: MatrixState[] = [
       <>
         <span className="mf-mini-skel" style={{ width: '70%' }} />
         <span className="mf-mini-skel" style={{ width: '45%' }} />
-        <span className="sr-only">Loading</span>
+        <span className="mf-sr-only">Loading</span>
       </>
     ),
   },
