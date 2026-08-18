@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { ContactPanel } from './components/ContactPanel'
 import { EMAIL, LINKEDIN_URL } from './content'
 import About from './pages/About'
 import Cicla from './pages/Cicla'
-import CvRedirect from './pages/CvRedirect'
 import GuidanceNote from './pages/GuidanceNote'
 import Home from './pages/Home'
 import Lab from './pages/Lab'
@@ -21,17 +21,18 @@ function ScrollToTop() {
 
 function App() {
   const { pathname } = useLocation()
+  const [contactOpen, setContactOpen] = useState(false)
   return (
-    <div className="mf-page min-h-screen antialiased">
+    <div className="mf-page">
       <ScrollToTop />
 
       {/* NAV */}
-      <nav className="px-6 pt-8 sm:px-10 sm:pt-9">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-3">
-          <Link to="/" className="mf-ink text-sm font-medium tracking-tight">
+      <nav className="mf-nav">
+        <div className="mf-shell mf-nav-row">
+          <Link to="/" className="mf-ink mf-nav-brand">
             Mona Fouad
           </Link>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+          <div className="mf-nav-links">
             <Link to="/cicla" className="mf-textlink">
               Cicla
             </Link>
@@ -40,18 +41,22 @@ function App() {
             </Link>
             {/* Notes returns here once it has real content; the route stays
                 live. */}
-            <a
-              href={`mailto:${EMAIL}`}
-              className="mf-textlink group inline-flex items-center gap-2"
+            <button
+              type="button"
+              className="mf-textlink mf-cta"
+              aria-haspopup="dialog"
+              onClick={() => setContactOpen(true)}
             >
               Get in touch
               <span aria-hidden="true" className="mf-arrow">
                 →
               </span>
-            </a>
+            </button>
           </div>
         </div>
       </nav>
+
+      <ContactPanel open={contactOpen} onClose={() => setContactOpen(false)} />
 
       {/* Keyed by path: each page enters with a quiet fade-up. */}
       <div key={pathname} className="mf-route">
@@ -65,30 +70,27 @@ function App() {
             element={<GuidanceNote />}
           />
           <Route path="/lab" element={<Lab />} />
-          <Route path="/cv" element={<CvRedirect />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </div>
 
       {/* FOOTER */}
-      <footer className="mf-hairline border-t px-6 py-10 sm:px-10">
-        <div className="mf-dim mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-8 gap-y-3 text-xs">
-          <span>Mona Fouad · Zürich / remote</span>
+      <footer className="mf-footer">
+        <div className="mf-shell mf-footer-row">
+          <span>Mona Fouad · Zürich</span>
           <span>
-            Open to design engineer &amp; AI product engineer roles, permanent
-            or contract
+            Frontend engineering, interface systems, and AI product
+            development.
           </span>
-          <span className="flex items-center gap-5">
+          <span className="mf-footer-links">
             <a href={`mailto:${EMAIL}`} className="mf-textlink">
               Email
             </a>
-            <a href="/cv" className="mf-textlink">
-              CV
-            </a>
+
             <a href={LINKEDIN_URL} className="mf-textlink">
               LinkedIn
             </a>
-            <span className="tabular-nums">© 2026</span>
+            <span className="mf-footer-year">© 2026</span>
           </span>
         </div>
       </footer>

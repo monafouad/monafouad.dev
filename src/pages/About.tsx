@@ -10,15 +10,15 @@ function About() {
 
   return (
     <>
-      <section className="px-6 pt-20 pb-24 sm:px-10 sm:pt-28 sm:pb-32">
-        <div className="reveal mx-auto max-w-4xl">
+      <section className="mf-section mf-section-lead">
+        <div className="mf-reveal mf-shell-narrow">
           <p className="mf-eyebrow">About</p>
-          <h1 className="mf-h1 mt-8 max-w-3xl text-3xl leading-[1.1] sm:text-4xl md:text-5xl">
+          <h1 className="mf-h1 mf-title-display mf-measure-max">
             Fifteen years on the side of software{' '}
             <em className="mf-em">people touch</em>.
           </h1>
 
-          <div className="mf-muted mt-14 max-w-2xl space-y-7 text-base leading-relaxed sm:text-lg">
+          <div className="mf-muted mf-about-body">
             <p>
               I started in software in Barcelona with a Microsoft certification
               in C#, and quickly learned what actually pulled me: the visual,

@@ -12,22 +12,22 @@ function GuidanceNote() {
 
   return (
     <>
-      <article className="px-6 pt-20 pb-24 sm:px-10 sm:pt-28 sm:pb-32">
-        <div className="mx-auto max-w-3xl">
-          <div className="reveal">
-            <div className="flex items-baseline justify-between gap-6">
+      <article className="mf-section mf-section-lead">
+        <div className="mf-shell-tight">
+          <div className="mf-reveal">
+            <div className="mf-note-head">
               <p className="mf-eyebrow">Notes · Cicla</p>
-              <span className="mf-dim text-xs font-medium tabular-nums">
+              <span className="mf-dim mf-note-stamp">
                 Aug 2026
               </span>
             </div>
-            <h1 className="mf-h1 mt-8 text-3xl leading-[1.1] sm:text-4xl">
+            <h1 className="mf-h1 mf-title-note">
               Turning cycle data into guidance{' '}
               <em className="mf-em">without overclaiming</em>.
             </h1>
           </div>
 
-          <div className="mt-14 space-y-12">
+          <div className="mf-note-body">
             <NoteBlock label="The problem">
               <p>
                 Cicla needed to turn cycle timing, daily logs, and previous
@@ -116,19 +116,19 @@ function GuidanceNote() {
             </NoteBlock>
           </div>
 
-          <div className="reveal mt-16 flex flex-wrap gap-x-10 gap-y-4">
+          <div className="mf-reveal mf-note-nav">
             <Link
               to="/cicla"
-              className="mf-textlink group inline-flex items-center gap-2 text-base font-medium"
+              className="mf-textlink mf-cta mf-cta-lg"
             >
-              <span aria-hidden="true" className="mf-arrow rotate-180">
+              <span aria-hidden="true" className="mf-arrow mf-arrow-back">
                 →
               </span>
               The Cicla case study
             </Link>
             <Link
               to="/notes"
-              className="mf-textlink group inline-flex items-center gap-2 text-base font-medium"
+              className="mf-textlink mf-cta mf-cta-lg"
             >
               All notes
               <span aria-hidden="true" className="mf-arrow">
@@ -152,9 +152,9 @@ function NoteBlock({
   readonly children: React.ReactNode
 }) {
   return (
-    <div className="reveal">
-      <p className="mf-label mf-label-accent mb-4">{label}</p>
-      <div className="mf-muted space-y-5 text-base leading-relaxed">
+    <div className="mf-reveal">
+      <p className="mf-label mf-label-accent mf-noteblock-label">{label}</p>
+      <div className="mf-muted mf-noteblock-copy">
         {children}
       </div>
     </div>

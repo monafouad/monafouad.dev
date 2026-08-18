@@ -16,8 +16,8 @@ function CvRedirect() {
   }, [])
 
   return (
-    <section className="px-6 py-24 sm:px-10">
-      <p className="mf-muted mx-auto max-w-5xl text-base">
+    <section className="mf-section mf-section-slim">
+      <p className="mf-muted mf-shell mf-cv-note">
         Opening the CV.{' '}
         <a href={CV_FILE} className="mf-link">
           Download directly

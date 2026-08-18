@@ -12,6 +12,10 @@
   --mf-accent-deep: #8b6e48;
   --mf-pop: #d87a33;
   --mf-border: rgba(26, 23, 20, 0.1);
+  /* Unitless line-height ratios (kept as calc inside variables so the
+     minifier cannot truncate their precision). */
+  --mf-leading-sm: calc(1.25 / 0.875);
+  --mf-leading-xs: calc(1 / 0.75);
 }
 
 @layer base {
@@ -31,6 +35,7 @@
 
 /* ── Surfaces & ink ─────────────────────────────────────────────────────── */
 .mf-page {
+  min-height: 100vh;
   background: var(--mf-bg);
   color: var(--mf-text);
 }
@@ -143,7 +148,7 @@
   background-size: 100% 1.5px;
   background-position: left bottom;
 }
-.group:hover .mf-cta-underline,
+.mf-cta:hover .mf-cta-underline,
 .mf-cta-underline:hover {
   animation: mf-underline-redraw 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -171,11 +176,36 @@
   color: var(--mf-accent);
   transition: transform 0.2s ease;
 }
-.group:hover .mf-arrow {
+.mf-cta:hover .mf-arrow,
+.mf-note-card:hover .mf-arrow {
   transform: translateX(2px);
 }
-.group:hover .mf-arrow-lg {
+.mf-cta:hover .mf-arrow-lg {
   transform: translateX(4px);
+}
+/* Reversed arrow (back links). The independent rotate composes with the
+   hover translate instead of being overwritten by it. */
+.mf-arrow-back {
+  rotate: 180deg;
+}
+/* Hover-group + layout for every link/button that carries an arrow. */
+.mf-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.mf-cta-lg {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+}
+.mf-pill {
+  border-radius: 999px;
+  padding: 0.875rem 1.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
 }
 .mf-pill-dark {
   background: var(--mf-text);
@@ -194,10 +224,66 @@
   background: rgba(26, 23, 20, 0.03);
 }
 
-/* ── Marks ──────────────────────────────────────────────────────────────── */
-.mf-dot-live {
-  background: var(--mf-pop);
+/* ── Contact panel (the header "Get in touch" dialog) ───────────────────
+   Native <dialog>: centred on desktop, a bottom sheet on mobile. The
+   entrance is a quiet fade-up, removed entirely under reduced motion. */
+.mf-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(26rem, calc(100vw - 2.5rem));
+  border: 1px solid var(--mf-border);
+  border-radius: 1.25rem;
+  padding: 0;
+  background: #fff;
+  color: var(--mf-text);
+  box-shadow: 0 24px 64px rgba(26, 23, 20, 0.18);
 }
+.mf-dialog::backdrop {
+  background: rgba(26, 23, 20, 0.32);
+}
+.mf-dialog[open] {
+  animation: mf-dialog-in 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.mf-dialog[open]::backdrop {
+  animation: mf-backdrop-in 0.22s ease;
+}
+@keyframes mf-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes mf-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+.mf-dialog-body {
+  padding: 1.6rem 1.75rem 1.75rem;
+}
+@media (max-width: 639px) {
+  .mf-dialog {
+    width: 100%;
+    max-width: 100%;
+    margin: auto 0 0;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+    border-radius: 1.25rem 1.25rem 0 0;
+  }
+  .mf-dialog-body {
+    padding-bottom: max(1.75rem, env(safe-area-inset-bottom));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mf-dialog[open],
+  .mf-dialog[open]::backdrop {
+    animation: none;
+  }
+}
+
+/* ── Marks ──────────────────────────────────────────────────────────────── */
 .mf-dot-sep {
   font-size: 0.6rem;
   color: var(--mf-dim);
@@ -419,17 +505,17 @@
   font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
   color: var(--mf-text);
 }
-.mf-code .tok-c {
+.mf-code .mf-tok-c {
   color: var(--mf-dim);
 }
-.mf-code .tok-k {
+.mf-code .mf-tok-k {
   color: var(--mf-accent-deep);
   font-weight: 500;
 }
 
 
 
-/* ── Screenshot card link (Lab 02: external system) ────────────────────── */
+/* ── Screenshot card link (Lab 01: external system) ────────────────────── */
 .mf-shotlink {
   position: relative;
   display: block;
@@ -478,7 +564,7 @@
   }
 }
 
-/* ── StreamingReply (Lab 01: streaming output that doesn't jump) ───────── */
+/* ── StreamingReply (Lab 02: streaming output that doesn't jump) ───────── */
 .mf-stream {
   display: flex;
   flex-direction: column;
@@ -697,6 +783,702 @@
   transform: translateY(-6px);
 }
 
+/* ── Layout system ──────────────────────────────────────────────────────
+   The composition layer: shells, section rhythm, text roles, and the
+   small shared patterns (item head/title/copy/note) that Cicla and the
+   Lab both use. Breakpoints match the previous responsive behaviour:
+   40rem (sm), 48rem (md), 64rem (lg). */
+
+/* Screen-reader-only content. */
+.mf-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Centred content shells. */
+.mf-shell {
+  margin-inline: auto;
+  max-width: 64rem;
+}
+.mf-shell-narrow {
+  margin-inline: auto;
+  max-width: 56rem;
+}
+.mf-shell-tight {
+  margin-inline: auto;
+  max-width: 48rem;
+}
+
+/* Section gutters + vertical rhythm variants. */
+.mf-section {
+  padding-inline: 1.5rem;
+}
+.mf-section-hero {
+  padding-top: 7rem;
+  padding-bottom: 6rem;
+}
+.mf-section-lead {
+  padding-top: 5rem;
+  padding-bottom: 6rem;
+}
+.mf-section-head {
+  padding-top: 4rem;
+  padding-bottom: 3rem;
+}
+.mf-section-intro {
+  padding-top: 4rem;
+  padding-bottom: 3.5rem;
+}
+.mf-section-band {
+  padding-block: 6rem;
+}
+.mf-section-item {
+  padding-block: 3.5rem;
+}
+.mf-section-block {
+  padding-block: 5rem;
+}
+.mf-section-cta {
+  padding-block: 5rem;
+}
+.mf-section-slim {
+  padding-block: 6rem;
+}
+@media (min-width: 40rem) {
+  .mf-section {
+    padding-inline: 2.5rem;
+  }
+  .mf-section-hero {
+    padding-top: 10rem;
+    padding-bottom: 8rem;
+  }
+  .mf-section-lead {
+    padding-top: 7rem;
+    padding-bottom: 8rem;
+  }
+  .mf-section-head {
+    padding-top: 5rem;
+    padding-bottom: 3.5rem;
+  }
+  .mf-section-intro {
+    padding-top: 5rem;
+    padding-bottom: 4rem;
+  }
+  .mf-section-band {
+    padding-block: 8rem;
+  }
+  .mf-section-item {
+    padding-block: 4rem;
+  }
+  .mf-section-block {
+    padding-block: 6rem;
+  }
+  .mf-section-cta {
+    padding-block: 7rem;
+  }
+}
+
+/* Hairline rules as borders (colour comes from the shared token). */
+.mf-rule-top {
+  border-top: 1px solid var(--mf-border);
+}
+.mf-center {
+  text-align: center;
+}
+
+/* Nav & footer chrome. */
+.mf-nav {
+  padding: 2rem 1.5rem 0;
+}
+.mf-nav-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 1.5rem;
+  row-gap: 0.75rem;
+}
+.mf-nav-brand {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.mf-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1.5rem;
+  row-gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: var(--mf-leading-sm);
+}
+.mf-footer {
+  border-top: 1px solid var(--mf-border);
+  padding: 2.5rem 1.5rem;
+}
+.mf-footer-row {
+  color: var(--mf-dim);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 2rem;
+  row-gap: 0.75rem;
+  font-size: 0.75rem;
+  line-height: var(--mf-leading-xs);
+}
+.mf-footer-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.mf-footer-year {
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 40rem) {
+  .mf-nav {
+    padding: 2.25rem 2.5rem 0;
+  }
+  .mf-footer {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* Display titles (About, Notes, Lab intros, the contact ask). */
+.mf-title-display {
+  margin-top: 2rem;
+  font-size: 1.875rem;
+  line-height: 1.1;
+}
+.mf-title-note {
+  margin-top: 2rem;
+  font-size: 1.875rem;
+  line-height: 1.1;
+}
+.mf-title-item {
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+.mf-title-status {
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+.mf-wordmark-lg {
+  font-size: 3rem;
+  line-height: 0.95;
+}
+.mf-statement-lg {
+  margin-top: 2rem;
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+@media (min-width: 40rem) {
+  .mf-title-display {
+    font-size: 2.25rem;
+  }
+  .mf-title-note {
+    font-size: 2.25rem;
+  }
+  .mf-title-item {
+    font-size: 1.875rem;
+  }
+  .mf-title-status {
+    font-size: 1.5rem;
+  }
+  .mf-wordmark-lg {
+    font-size: 3.75rem;
+  }
+  .mf-statement-lg {
+    font-size: 1.875rem;
+  }
+}
+@media (min-width: 48rem) {
+  .mf-title-display {
+    font-size: 3rem;
+  }
+  .mf-statement-lg {
+    font-size: 2.25rem;
+    line-height: 1.25;
+  }
+}
+
+/* Lede copy: the paragraph under a page or teaser title. */
+.mf-lede {
+  margin-top: 1.75rem;
+  font-size: 1rem;
+  line-height: 1.625;
+}
+@media (min-width: 40rem) {
+  .mf-lede {
+    font-size: 1.125rem;
+  }
+}
+
+/* Numbered item pattern (Cicla decisions, Lab entries). */
+.mf-item-num {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+.mf-item-copy {
+  margin-top: 1.25rem;
+  max-width: 42rem;
+  font-size: 0.97rem;
+  line-height: 1.625;
+}
+@media (min-width: 40rem) {
+  .mf-item-copy {
+    font-size: 1rem;
+  }
+}
+.mf-item-note {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.mf-item-cta {
+  margin-top: 1.5rem;
+}
+.mf-item-grid {
+  display: grid;
+  align-items: flex-start;
+  gap: 2.5rem;
+}
+.mf-item-demo {
+  min-width: 0;
+}
+@media (min-width: 64rem) {
+  .mf-item-grid {
+    grid-template-columns: 2fr 3fr;
+    gap: 3.5rem;
+  }
+}
+.mf-item-subtitle {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+}
+.mf-item-blurb {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.625;
+}
+
+/* Small annotations. */
+.mf-hint {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.mf-micronote {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.mf-footnote {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  line-height: 1.625;
+}
+
+/* Vertical stacks (successor to the old space-y utilities). */
+.mf-stack-sm > * + * {
+  margin-top: 1rem;
+}
+
+/* Home. */
+.mf-hero-title {
+  margin-top: 2rem;
+  font-size: 2.25rem;
+  line-height: 1.06;
+}
+.mf-hero-br {
+  display: none;
+}
+.mf-hero-links {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1.75rem;
+  row-gap: 1rem;
+  font-size: 0.875rem;
+  line-height: var(--mf-leading-sm);
+}
+.mf-hero-status {
+  margin-top: 3rem;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+.mf-kicker {
+  margin-bottom: 2.5rem;
+}
+.mf-teaser-grid {
+  display: grid;
+  align-items: center;
+  gap: 3.5rem;
+}
+.mf-teaser-actions {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 2rem;
+  row-gap: 1rem;
+}
+.mf-teaser-figure {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+.mf-teaser-title {
+  margin-top: 1.5rem;
+}
+.mf-teaser-items {
+  margin-top: 2rem;
+  display: grid;
+  gap: 2rem;
+}
+.mf-teaser-more {
+  margin-top: 2.25rem;
+}
+.mf-shot-home {
+  max-height: 340px;
+  width: auto;
+  object-fit: contain;
+}
+.mf-shot-case {
+  max-height: 400px;
+  width: auto;
+  object-fit: contain;
+}
+@media (min-width: 40rem) {
+  .mf-hero-title {
+    font-size: 3.75rem;
+  }
+  .mf-hero-br {
+    display: block;
+  }
+  .mf-hero-links {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .mf-teaser-items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mf-shot-home {
+    max-height: 380px;
+  }
+}
+@media (min-width: 48rem) {
+  .mf-hero-title {
+    font-size: 4.5rem;
+    line-height: 1.02;
+  }
+  .mf-teaser-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4rem;
+  }
+  .mf-teaser-figure {
+    justify-content: flex-end;
+  }
+}
+
+/* Cicla case study. */
+.mf-case-hero-grid {
+  display: grid;
+  align-items: center;
+  gap: 3rem;
+}
+.mf-case-grid {
+  display: grid;
+  align-items: flex-start;
+  gap: 2.5rem;
+}
+.mf-decision-grid {
+  display: grid;
+  align-items: flex-start;
+  gap: 2.5rem;
+}
+@media (min-width: 48rem) {
+  .mf-case-hero-grid {
+    grid-template-columns: 3fr 2fr;
+    gap: 4rem;
+  }
+  .mf-case-grid {
+    grid-template-columns: 2fr 3fr;
+    gap: 3.5rem;
+  }
+}
+@media (min-width: 64rem) {
+  .mf-decision-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3.5rem;
+  }
+}
+.mf-decisions {
+  margin-top: 2.5rem;
+}
+.mf-decisions > * + * {
+  margin-top: 3.5rem;
+}
+@media (min-width: 40rem) {
+  .mf-decisions > * + * {
+    margin-top: 4rem;
+  }
+}
+.mf-meta-grid {
+  margin-top: 2.25rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 2rem;
+  row-gap: 1.75rem;
+  border-top: 1px solid var(--mf-border);
+  padding-top: 2rem;
+  font-size: 0.875rem;
+  line-height: var(--mf-leading-sm);
+}
+.mf-meta-label {
+  margin-bottom: 0.375rem;
+}
+.mf-meta-value {
+  font-weight: 500;
+}
+.mf-table-scroll {
+  margin-top: 2rem;
+  overflow-x: auto;
+}
+.mf-token-table {
+  width: 100%;
+  min-width: 520px;
+  text-align: left;
+  font-size: 0.875rem;
+  line-height: var(--mf-leading-sm);
+}
+.mf-token-head {
+  color: var(--mf-dim);
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.mf-token-table th {
+  padding-block: 0.5rem;
+  font-weight: 600;
+}
+.mf-token-table th:not(:last-child) {
+  padding-right: 1rem;
+}
+.mf-token-table tbody tr {
+  border-top: 1px solid var(--mf-border);
+}
+.mf-token-table td {
+  padding: 0.625rem 1rem 0.625rem 0;
+}
+.mf-token-table td:first-child {
+  font-weight: 500;
+}
+.mf-token-table code {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.mf-swatch-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.mf-swatch {
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 0.25rem;
+}
+.mf-swatch-round {
+  border-radius: 999px;
+}
+.mf-excerpt {
+  margin-top: 2.5rem;
+  max-width: 42rem;
+}
+.mf-todo {
+  font-style: italic;
+}
+
+/* Notes. */
+.mf-note-list {
+  margin-top: 4rem;
+  border-top: 1px solid var(--mf-border);
+}
+.mf-note-card {
+  display: block;
+  border-bottom: 1px solid var(--mf-border);
+  padding-block: 2.5rem;
+}
+.mf-note-date {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+.mf-note-title {
+  margin-top: 1rem;
+}
+.mf-note-line {
+  margin-top: 1rem;
+  max-width: 42rem;
+  font-size: 0.97rem;
+  line-height: 1.625;
+}
+.mf-note-more {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+}
+.mf-note-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.mf-note-stamp {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.mf-note-body {
+  margin-top: 3.5rem;
+}
+.mf-note-body > * + * {
+  margin-top: 3rem;
+}
+.mf-noteblock-label {
+  margin-bottom: 1rem;
+}
+.mf-noteblock-copy {
+  font-size: 1rem;
+  line-height: 1.625;
+}
+.mf-noteblock-copy > * + * {
+  margin-top: 1.25rem;
+}
+.mf-note-nav {
+  margin-top: 4rem;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 2.5rem;
+  row-gap: 1rem;
+}
+
+/* About. */
+.mf-about-body {
+  margin-top: 3.5rem;
+  max-width: 42rem;
+  font-size: 1rem;
+  line-height: 1.625;
+}
+.mf-about-body > * + * {
+  margin-top: 1.75rem;
+}
+@media (min-width: 40rem) {
+  .mf-about-body {
+    font-size: 1.125rem;
+  }
+}
+
+/* Contact section & panel details. */
+.mf-contact-actions {
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.mf-dialog-email {
+  margin-top: 1.25rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.mf-dialog-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.mf-dialog-status {
+  margin-top: 1rem;
+  min-height: 1.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.mf-dialog-close {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* CycleRing extras & CV note. */
+.mf-cring-caption {
+  font-size: 0.75rem;
+  line-height: 1.625;
+}
+.mf-cring-label {
+  margin-bottom: 0.5rem;
+}
+.mf-cring-empty {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.mf-cring-close {
+  margin-top: 0.75rem;
+}
+.mf-cv-note {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+/* Text measures. Placed after the patterns so a measure always wins
+   over a pattern's default width. */
+.mf-measure {
+  max-width: 36rem;
+}
+.mf-measure-wide {
+  max-width: 42rem;
+}
+.mf-measure-max {
+  max-width: 48rem;
+}
+
+/* Contextual margin overrides (after the roles they adjust). */
+.mf-hero-copy {
+  margin-top: 2.25rem;
+  max-width: 36rem;
+}
+.mf-notes-lede {
+  margin-top: 2rem;
+}
+.mf-lab-title {
+  margin-top: 1.75rem;
+}
+
 /* ── Reveal-on-scroll ───────────────────────────────────────────────────
    Progressive enhancement: content is VISIBLE by default. Only when the
    inline script in index.html has stamped html.js does the hidden state
@@ -704,24 +1486,24 @@
    The observer fires at first-pixel entry (see useReveal), so a section
    heading is never still faded while readable, which used to read as
    the band "cutting off" its first line. */
-.reveal {
+.mf-reveal {
   opacity: 1;
   transform: none;
 }
-.js .reveal {
+.js .mf-reveal {
   transition:
     opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1),
     transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: opacity, transform;
 }
-.js .reveal:not(.is-in) {
+.js .mf-reveal:not(.is-in) {
   opacity: 0;
   transform: translateY(20px);
 }
 
 /* Staggered variant: the container stays put; its children cascade in
    80ms apart. Used on the hero (as a load entrance) and on key sections. */
-.js .reveal.mf-stagger:not(.is-in) {
+.js .mf-reveal.mf-stagger:not(.is-in) {
   opacity: 1;
   transform: none;
 }
@@ -765,26 +1547,15 @@
   }
 }
 
-/* The availability dot breathes, slowly. */
-.mf-dot-live {
-  animation: mf-breathe 3.2s ease-in-out infinite;
-}
-@keyframes mf-breathe {
-  50% {
-    opacity: 0.45;
-    transform: scale(0.8);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .js .reveal {
+  .js .mf-reveal {
     transition: none;
     will-change: auto;
   }
-  .js .reveal:not(.is-in) {
+  .js .mf-reveal:not(.is-in) {
     opacity: 1;
     transform: none;
   }
@@ -796,9 +1567,6 @@
     transform: none;
   }
   .mf-route {
-    animation: none;
-  }
-  .mf-dot-live {
     animation: none;
   }
   .mf-link,

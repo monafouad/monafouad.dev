@@ -141,7 +141,7 @@ export function FlashCompare() {
           Replay
         </button>
         <fieldset className="mf-flash-speeds">
-          <legend className="sr-only">Replay speed</legend>
+          <legend className="mf-sr-only">Replay speed</legend>
           {SPEEDS.map((s) => (
             <label key={s.factor} className="mf-flash-speed">
               <input
@@ -154,7 +154,7 @@ export function FlashCompare() {
             </label>
           ))}
         </fieldset>
-        <span className="mf-dim text-xs">
+        <span className="mf-dim mf-hint">
           slow motion; at 1× the flash is a single frame
         </span>
       </div>

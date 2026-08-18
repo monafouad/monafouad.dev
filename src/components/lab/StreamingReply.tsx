@@ -215,7 +215,7 @@ export function StreamingReply() {
         >
           Stop
         </button>
-        <span className="mf-dim text-xs" role="status" aria-live="polite">
+        <span className="mf-dim mf-hint" role="status" aria-live="polite">
           {status === 'streaming'
             ? 'Streaming, canned sample, simulated timing'
             : status === 'stopped'
