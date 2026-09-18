@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import { ContactPanel } from './components/ContactPanel'
 import { EMAIL, LINKEDIN_URL } from './content'
 import About from './pages/About'
@@ -34,6 +35,7 @@ function App() {
   return (
     <div className="mf-page">
       <ScrollToTop />
+      <Analytics />
 
       {/* NAV */}
       {!isV2 && (
