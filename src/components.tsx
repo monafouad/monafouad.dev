@@ -19,10 +19,8 @@ export function Contact() {
   return (
     <section className="mf-section mf-section-cta">
       <div className="mf-reveal mf-stagger mf-shell-tight mf-center">
-        <p className="mf-eyebrow">Let&rsquo;s talk</p>
         <h2 className="mf-h2 mf-title-display">
-          Building something that could use a{' '}
-          <em className="mf-em">design engineer</em>?
+          Get in touch
         </h2>
         <div className="mf-contact-actions">
           <a href={`mailto:${EMAIL}`} className="mf-pill mf-pill-dark">

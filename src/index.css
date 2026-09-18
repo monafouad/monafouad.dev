@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* Cicla brand faces (Satoshi, Zodiak) are loaded via <link> in index.html,
+   not here: a CSS @import after Tailwind's expanded output is an invalid
+   @import position and Vite rejects it. */
 
 /* ── Palette ──────────────────────────────────────────────────────────────
    Warm, quiet, editorial. One restrained tan, used only for small marks. */
@@ -16,6 +19,12 @@
      minifier cannot truncate their precision). */
   --mf-leading-sm: calc(1.25 / 0.875);
   --mf-leading-xs: calc(1 / 0.75);
+  /* /v2 motion tokens: one easing curve, one duration scale. The 300ms
+     step matches the app's own --transition-slow (cicla_app). */
+  --mf-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --mf-dur-1: 200ms;
+  --mf-dur-2: 300ms;
+  --mf-dur-3: 500ms;
 }
 
 @layer base {
@@ -38,9 +47,6 @@
   min-height: 100vh;
   background: var(--mf-bg);
   color: var(--mf-text);
-}
-.mf-soft {
-  background: var(--mf-bg-soft);
 }
 .mf-ink {
   color: var(--mf-text);
@@ -71,8 +77,8 @@
 
 /* ── Type roles (all Inter) ─────────────────────────────────────────────── */
 .mf-eyebrow {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.28em;
   color: var(--mf-accent);
@@ -93,10 +99,6 @@
   font-weight: 600;
   letter-spacing: -0.03em;
 }
-.mf-statement {
-  font-weight: 500;
-  letter-spacing: -0.012em;
-}
 .mf-num {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -106,7 +108,7 @@
   color: var(--mf-dim);
 }
 .mf-label {
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -182,6 +184,14 @@
 }
 .mf-cta:hover .mf-arrow-lg {
   transform: translateX(4px);
+}
+/* Deliberate keyboard focus for every text link. */
+.mf-link:focus-visible,
+.mf-textlink:focus-visible,
+.mf-cta:focus-visible {
+  outline: 2px solid var(--mf-accent-deep);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 /* Reversed arrow (back links). The independent rotate composes with the
    hover translate instead of being overwritten by it. */
@@ -283,12 +293,6 @@
   }
 }
 
-/* ── Marks ──────────────────────────────────────────────────────────────── */
-.mf-dot-sep {
-  font-size: 0.6rem;
-  color: var(--mf-dim);
-}
-
 /* ── Lab components (PhaseMorph, FlashCompare, StateMatrix, specs) ──────
    Interactive evidence on the Cicla page, reusable on /lab later. Same
    palette and type roles as the rest of the site. */
@@ -387,7 +391,7 @@
 .mf-flash-cap {
   padding: 0.8rem 1rem;
   color: var(--mf-muted);
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   line-height: 1.5;
 }
 .mf-flash-cap strong {
@@ -422,7 +426,7 @@
   padding: 0.35rem 0.7rem;
   border: 1px solid var(--mf-border);
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 500;
 }
 .mf-flash-speed input:checked + span {
@@ -932,7 +936,7 @@
   justify-content: space-between;
   column-gap: 2rem;
   row-gap: 0.75rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   line-height: var(--mf-leading-xs);
 }
 .mf-footer-links {
@@ -975,11 +979,6 @@
   font-size: 3rem;
   line-height: 0.95;
 }
-.mf-statement-lg {
-  margin-top: 2rem;
-  font-size: 1.5rem;
-  line-height: 1.3;
-}
 @media (min-width: 40rem) {
   .mf-title-display {
     font-size: 2.25rem;
@@ -996,17 +995,10 @@
   .mf-wordmark-lg {
     font-size: 3.75rem;
   }
-  .mf-statement-lg {
-    font-size: 1.875rem;
-  }
 }
 @media (min-width: 48rem) {
   .mf-title-display {
     font-size: 3rem;
-  }
-  .mf-statement-lg {
-    font-size: 2.25rem;
-    line-height: 1.25;
   }
 }
 
@@ -1030,7 +1022,7 @@
 }
 .mf-item-copy {
   margin-top: 1.25rem;
-  max-width: 42rem;
+  /* max-width: 42rem; */
   font-size: 0.97rem;
   line-height: 1.625;
 }
@@ -1061,21 +1053,15 @@
     gap: 3.5rem;
   }
 }
-.mf-item-subtitle {
-  font-size: 1rem;
-  line-height: 1.5rem;
-  font-weight: 600;
-}
-.mf-item-blurb {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.625;
-}
 
 /* Small annotations. */
+/* "Try it": the understated invitation above a live demo. */
+.mf-tryit {
+  margin: 0 0 0.75rem;
+}
 .mf-hint {
-  font-size: 0.75rem;
-  line-height: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 .mf-micronote {
   margin-top: 0.75rem;
@@ -1102,26 +1088,6 @@
 .mf-hero-br {
   display: none;
 }
-.mf-hero-links {
-  margin-top: 2.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  column-gap: 1.75rem;
-  row-gap: 1rem;
-  font-size: 0.875rem;
-  line-height: var(--mf-leading-sm);
-}
-.mf-hero-status {
-  margin-top: 3rem;
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.75rem;
-  line-height: 1rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-}
 .mf-kicker {
   margin-bottom: 2.5rem;
 }
@@ -1143,21 +1109,150 @@
   display: flex;
   justify-content: center;
 }
-.mf-teaser-title {
-  margin-top: 1.5rem;
-}
-.mf-teaser-items {
-  margin-top: 2rem;
-  display: grid;
-  gap: 2rem;
-}
 .mf-teaser-more {
   margin-top: 2.25rem;
 }
+/* ── Cicla section (Home): abstract brand treatment ────────────────
+   The section washes with the active phase's real surface colour (set
+   inline via color-mix), the rule under the wordmark takes the ring
+   colour, and the typographic phase index drives the state. */
+.mf-cicla {
+  /* A constant warm wash of the app's real luteal surface token
+     (cicla_app PHASE_SURFACE.luteal), so the section always reads
+     Cicla; the artwork carries the phase state. */
+  background: color-mix(in srgb, #c35b32 7%, #fbf9f4);
+}
+/* ── PhaseWorlds (the Cicla brand-motion study) ─────────────────────
+   Four real phase atmospheres (flat PHASE_SURFACE + PHASE_SURFACE_LIGHT
+   below the canonical wave). The handover is the only motion: the next
+   world washes in from below with the wave silhouette as its edge.
+   A compact wide editorial strip; scroll drives it. */
+.mf-pw {
+  position: relative;
+  height: clamp(170px, 20vh, 190px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgba(26, 23, 20, 0.06);
+  cursor: pointer;
+}
+.mf-pw:focus-visible {
+  outline: 2px solid var(--mf-accent-deep);
+  outline-offset: 4px;
+}
+.mf-pw-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+.mf-pw-inner {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.1rem, 2vw, 1.6rem) clamp(1.25rem, 2.5vw, 2rem);
+}
+/* The brand's own logotype voice (Satoshi). */
+.mf-pw-logo {
+  font-family: 'Satoshi', 'Inter', ui-sans-serif, sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+/* The phase word: Zodiak italic, the hero accent voice — sized to sit
+   inside the strip, never to dominate it. During a handover the two
+   words occupy the same spot and cross-fade. */
+.mf-pw-words {
+  position: relative;
+  margin-top: auto;
+}
+.mf-pw-name {
+  display: block;
+  font-family: 'Zodiak', 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  line-height: 1;
+  color: #fff;
+  will-change: opacity, transform;
+}
+.mf-pw-name-next {
+  position: absolute;
+  inset: 0;
+}
+/* The hero's serif word arrives a beat after the headline. */
+.mf-hero-title .mf-em {
+  display: inline-block;
+  animation: mf-em-in 0.7s 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes mf-em-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.18em);
+  }
+}
+
+/* Lab previews on Home: two concise live studies side by side. */
+.mf-labprev-grid {
+  margin-top: 2.5rem;
+  display: grid;
+  gap: 3rem;
+  align-items: start;
+}
+@media (min-width: 64rem) {
+  .mf-labprev-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3.5rem;
+  }
+}
+.mf-labprev-demo {
+  margin-top: 1.25rem;
+}
+.mf-labprev .mf-lab-stream {
+  margin-top: 1.25rem;
+  min-height: 3.6em;
+}
+.mf-labprev-more {
+  margin: 1.25rem 0 0;
+}
+
+/* Earlier work: one quiet provenance line. */
+.mf-earlier {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Lab (Home): the inline self-typing line under the description. */
+.mf-lab-stream {
+  margin-top: 1.75rem;
+  max-width: 42rem;
+  min-height: 3.6em;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+@media (min-width: 40rem) {
+  .mf-lab-stream {
+    min-height: 1.8em;
+  }
+}
+
 .mf-shot-home {
   max-height: 340px;
   width: auto;
   object-fit: contain;
+}
+/* Real product imagery lifts a touch under the pointer; never distorts. */
+.mf-shot-hover {
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.mf-shot-hover:hover {
+  transform: scale(1.02);
 }
 .mf-shot-case {
   max-height: 400px;
@@ -1170,13 +1265,6 @@
   }
   .mf-hero-br {
     display: block;
-  }
-  .mf-hero-links {
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  .mf-teaser-items {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .mf-shot-home {
     max-height: 380px;
@@ -1237,6 +1325,633 @@
 @media (min-width: 40rem) {
   .mf-decisions > * + * {
     margin-top: 4rem;
+  }
+}
+/* Single meta line on the Cicla read-more page. */
+.mf-case-meta {
+  margin-top: 2rem;
+  font-size: 0.9375rem;
+}
+/* ── Cicla case study (mf-cs-*) ─────────────────────────────────────────
+   Three chapters, each with a distinct exhibit, in the site's warm palette
+   and type. Phones are rounded documentary frames; diagrams are built from
+   labelled nodes; technical detail hides in native <details>. */
+.mf-cs-head .mf-item-num {
+  margin-bottom: 0.5rem;
+}
+.mf-cs-head .mf-item-copy + .mf-item-copy {
+  margin-top: 1rem;
+}
+
+/* Device frame for every real capture and the video. */
+.mf-cs-phone {
+  width: 100%;
+  max-width: 300px;
+  margin: 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: var(--mf-bg-soft);
+  box-shadow: 0 20px 44px rgba(26, 23, 20, 0.16);
+}
+.mf-cs-phone img,
+.mf-cs-video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.mf-cs-video {
+  background: #2a1030;
+}
+/* The repeated-pattern detail is a long screen; a fixed device height keeps
+   the exhibit compact, with the title, summary, evidence table and the first
+   per-cycle dots visible before any scroll. */
+.mf-cs-phone-tall {
+  max-height: 640px;
+  overflow-y: auto;
+}
+.mf-cs-phone-support {
+  max-width: 280px;
+}
+
+.mf-cs-figure {
+  margin: 2.5rem 0 0;
+}
+.mf-cs-figure-wide {
+  margin-top: 2.5rem;
+}
+.mf-cs-support {
+  max-width: 620px;
+}
+.mf-cs-cap {
+  margin: 0.9rem 0 0;
+  max-width: 30rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--mf-dim);
+}
+.mf-cs-demo {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mf-accent-deep);
+  border: 1px solid var(--mf-border);
+  border-radius: 999px;
+}
+
+/* Chapter 1 layout: forming + flow diagram on the left, the taller
+   repeated-evidence phone on the right; stacked on small screens. */
+.mf-cs-ch1-grid {
+  margin-top: 2.5rem;
+  display: grid;
+  gap: 2.5rem;
+}
+.mf-cs-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.mf-cs-col .mf-cs-figure {
+  margin-top: 0;
+}
+@media (min-width: 56rem) {
+  .mf-cs-ch1-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+/* Shared node/flow vocabulary for both diagrams. */
+.mf-cs-node {
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--mf-border);
+  border-radius: 0.6rem;
+  background: var(--mf-bg);
+}
+.mf-cs-node-out {
+  border-color: var(--mf-accent);
+}
+.mf-cs-flow {
+  color: var(--mf-accent);
+  font-size: 1rem;
+  line-height: 1;
+}
+.mf-cs-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.5rem;
+  border: 1px solid var(--mf-border);
+  border-radius: 1rem;
+  background: var(--mf-bg-soft);
+}
+.mf-cs-branch {
+  display: grid;
+  gap: 1.25rem;
+  width: 100%;
+}
+@media (min-width: 30rem) {
+  .mf-cs-branch {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.mf-cs-arm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.mf-cs-cond {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--mf-muted);
+  text-align: center;
+}
+.mf-cs-note {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--mf-dim);
+}
+
+/* Chapter 2: before / after architecture. */
+.mf-cs-arch {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 52rem) {
+  .mf-cs-arch {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+.mf-cs-arch-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 1px solid var(--mf-border);
+  border-radius: 1rem;
+  background: var(--mf-bg-soft);
+  margin-top: 1rem;
+}
+.mf-cs-arch-label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mf-accent);
+}
+.mf-cs-arch-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+}
+.mf-cs-arch-cluster span {
+  font-size: 0.75rem;
+  color: var(--mf-dim);
+  border: 1px dashed var(--mf-border);
+  border-radius: 0.4rem;
+  padding: 0.2rem 0.45rem;
+}
+.mf-cs-arch-caption {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--mf-muted);
+}
+.mf-cs-spine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+.mf-cs-spine-sub {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--mf-dim);
+}
+.mf-cs-pillars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+}
+.mf-cs-pillar {
+  text-align: center;
+  font-size: 0.82rem;
+  padding: 0.5rem 0.3rem;
+  border: 1px solid var(--mf-border);
+  border-radius: 0.5rem;
+  color: var(--mf-muted);
+  background: var(--mf-bg);
+}
+.mf-cs-pillar-on {
+  border-color: var(--mf-accent);
+  color: var(--mf-text);
+  font-weight: 600;
+}
+
+/* Chapter 2: the traced example strip. */
+.mf-cs-trace {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.mf-cs-trace-step {
+  flex: 1 1 12rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--mf-border);
+  border-radius: 0.6rem;
+  background: var(--mf-bg-soft);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--mf-text);
+}
+.mf-cs-trace-k {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mf-accent);
+}
+
+/* Chapter 3: video + decisions. */
+.mf-cs-ch3-grid {
+  margin-top: 2.5rem;
+  display: grid;
+  gap: 2.5rem;
+  align-items: start;
+}
+@media (min-width: 56rem) {
+  .mf-cs-ch3-grid {
+    grid-template-columns: minmax(0, 320px) 1fr;
+    gap: 3rem;
+  }
+}
+.mf-cs-decisions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+.mf-cs-decision h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+}
+.mf-cs-decision p {
+  margin: 0;
+}
+
+/* Code marks that read on both page and soft backgrounds. */
+.mf-cs-diagram code,
+.mf-cs-arch-caption code,
+.mf-cs-trace code,
+.mf-cs-details-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  border: 1px solid var(--mf-border);
+  border-radius: 0.3rem;
+  padding: 0.02rem 0.28rem;
+}
+
+/* Technical disclosures. */
+.mf-cs-details {
+  margin-top: 2rem;
+  border-top: 1px solid var(--mf-border);
+}
+.mf-cs-details summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--mf-accent-deep);
+}
+.mf-cs-details summary::-webkit-details-marker {
+  display: none;
+}
+.mf-cs-details summary::before {
+  content: '+';
+  color: var(--mf-accent);
+  font-weight: 700;
+}
+.mf-cs-details[open] summary::before {
+  content: '\2013';
+}
+.mf-cs-details summary:focus-visible {
+  outline: 2px solid var(--mf-accent-deep);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.mf-cs-details-body {
+  padding-bottom: 1rem;
+}
+.mf-cs-details-body p {
+  margin: 0 0 0.8rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--mf-muted);
+}
+
+/* Closing evidence. */
+.mf-cs-closing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.mf-cs-snapshot {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+/* One coherent exhibit spine: a fixed visual rail on the left, support on
+   the right, shared by Chapters 1 and 3 so every exhibit lines up down the
+   page. */
+.mf-cs-stage {
+  margin-top: 2.5rem;
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+}
+.mf-cs-stage + .mf-cs-stage {
+  margin-top: 3rem;
+}
+@media (min-width: 56rem) {
+  .mf-cs-stage {
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    gap: 3rem;
+  }
+}
+.mf-cs-stage-visual {
+  min-width: 0;
+}
+.mf-cs-stage-visual .mf-cs-figure {
+  margin: 0;
+}
+.mf-cs-stage-aside {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.mf-cs-stage-aside > h3 {
+  margin: 0;
+}
+.mf-cs-stage-note {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--mf-muted);
+}
+.mf-cs-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--mf-accent-deep);
+}
+
+/* Chapter 1 toggle: a two-state segmented control with a sliding pill. */
+.mf-cs-toggle {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 300px;
+  margin-bottom: 1rem;
+  border: 1px solid var(--mf-border);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--mf-bg-soft);
+}
+.mf-cs-toggle-btn {
+  position: relative;
+  z-index: 1;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.55rem 0.4rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--mf-muted);
+  transition: color var(--mf-dur-1) var(--mf-ease);
+}
+.mf-cs-toggle-btn[aria-pressed='true'] {
+  color: #fff;
+}
+.mf-cs-toggle-btn:focus-visible {
+  outline: 2px solid var(--mf-accent-deep);
+  outline-offset: -3px;
+  border-radius: 999px;
+}
+.mf-cs-toggle-ind {
+  position: absolute;
+  z-index: 0;
+  inset: 0 auto 0 0;
+  width: 50%;
+  background: var(--mf-accent-deep);
+  transition: transform var(--mf-dur-2) var(--mf-ease);
+}
+
+/* The switching phone: both captures stacked; the active one crossfades and
+   slides in. Fixed height keeps the exhibit compact and equal across states,
+   showing each screen's essential top (including the per-cycle dots). */
+.mf-cs-phone-switch {
+  position: relative;
+  height: 500px;
+}
+.mf-cs-phone-switch img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  transform: translateX(14px);
+  transition:
+    opacity var(--mf-dur-2) var(--mf-ease),
+    transform var(--mf-dur-2) var(--mf-ease);
+}
+.mf-cs-phone-switch img.is-active {
+  opacity: 1;
+  transform: none;
+}
+
+/* The flow diagram reacts to the toggle: the active outcome fills and pulses,
+   the other dims; the connectors drift to signal flow. */
+.mf-cs-arm {
+  transition: opacity var(--mf-dur-2) var(--mf-ease);
+}
+.mf-cs-arm[data-active='false'] {
+  opacity: 0.5;
+}
+.mf-cs-node-out {
+  transition:
+    background var(--mf-dur-2) var(--mf-ease),
+    color var(--mf-dur-2) var(--mf-ease),
+    border-color var(--mf-dur-2) var(--mf-ease);
+}
+.mf-cs-arm[data-active='true'] .mf-cs-node-out {
+  background: var(--mf-accent-deep);
+  color: #fff;
+  border-color: var(--mf-accent-deep);
+  animation: mf-cs-pulse 1.8s var(--mf-ease) infinite;
+}
+@keyframes mf-cs-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 110, 72, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 9px rgba(139, 110, 72, 0);
+  }
+}
+.mf-cs-diagram .mf-cs-flow {
+  animation: mf-cs-bob 1.6s ease-in-out infinite;
+}
+@keyframes mf-cs-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mf-cs-toggle-ind,
+  .mf-cs-phone-switch img,
+  .mf-cs-arm,
+  .mf-cs-node-out {
+    transition: none;
+  }
+  .mf-cs-arm[data-active='true'] .mf-cs-node-out,
+  .mf-cs-diagram .mf-cs-flow {
+    animation: none;
+  }
+}
+
+/* Self-playing motion so the page is alive before any interaction:
+   a current travels the Chapter 1 pipeline, the trace lights step by step,
+   and the three active pillars pulse in sequence. */
+.mf-cs-diagram {
+  position: relative;
+  overflow: hidden;
+}
+.mf-cs-current {
+  position: absolute;
+  left: 50%;
+  top: 1.4rem;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: var(--mf-pop);
+  box-shadow: 0 0 0 5px rgba(216, 122, 51, 0.16);
+  pointer-events: none;
+  animation: mf-cs-travel 2.6s var(--mf-ease) infinite;
+}
+@keyframes mf-cs-travel {
+  0% {
+    top: 1.2rem;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  60% {
+    top: calc(100% - 6rem);
+    opacity: 1;
+  }
+  80% {
+    top: calc(100% - 6rem);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.mf-cs-trace-step {
+  animation: mf-cs-stephi 3.9s ease-in-out infinite;
+}
+.mf-cs-trace-step:nth-of-type(2) {
+  animation-delay: 1.3s;
+}
+.mf-cs-trace-step:nth-of-type(3) {
+  animation-delay: 2.6s;
+}
+@keyframes mf-cs-stephi {
+  0%,
+  100% {
+    border-color: var(--mf-border);
+    box-shadow: none;
+  }
+  8% {
+    border-color: var(--mf-accent-deep);
+    box-shadow: 0 0 0 3px rgba(184, 74, 36, 0.12);
+  }
+  25% {
+    border-color: var(--mf-border);
+    box-shadow: none;
+  }
+}
+.mf-cs-trace .mf-cs-flow {
+  animation: mf-cs-bobx 1.5s ease-in-out infinite;
+}
+@keyframes mf-cs-bobx {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+.mf-cs-pillar-on {
+  animation: mf-cs-sweep 2.8s ease-in-out infinite;
+}
+.mf-cs-pillars li:nth-child(4).mf-cs-pillar-on {
+  animation-delay: 0.5s;
+}
+.mf-cs-pillars li:nth-child(6).mf-cs-pillar-on {
+  animation-delay: 1s;
+}
+@keyframes mf-cs-sweep {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 110, 72, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(139, 110, 72, 0.14);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mf-cs-current {
+    display: none;
+  }
+  .mf-cs-trace-step,
+  .mf-cs-trace .mf-cs-flow,
+  .mf-cs-pillar-on {
+    animation: none;
   }
 }
 .mf-meta-grid {
@@ -1437,7 +2152,7 @@
 
 /* CycleRing extras & CV note. */
 .mf-cring-caption {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   line-height: 1.625;
 }
 .mf-cring-label {
@@ -1458,10 +2173,10 @@
 /* Text measures. Placed after the patterns so a measure always wins
    over a pattern's default width. */
 .mf-measure {
-  max-width: 36rem;
+  /* max-width: 36rem; */
 }
 .mf-measure-wide {
-  max-width: 42rem;
+  /* max-width: 42rem; */
 }
 .mf-measure-max {
   max-width: 48rem;
@@ -1486,59 +2201,68 @@
    The observer fires at first-pixel entry (see useReveal), so a section
    heading is never still faded while readable, which used to read as
    the band "cutting off" its first line. */
+/* Visible by default: only elements the reveal hook explicitly armed
+   (data-reveal="pending", set from JS when an observer exists and the
+   element starts below the fold) are ever hidden. No attribute means
+   no hiding, whatever happened to the observer. */
 .mf-reveal {
   opacity: 1;
   transform: none;
 }
-.js .mf-reveal {
+.mf-reveal[data-reveal] {
   transition:
-    opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+    opacity 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: opacity, transform;
 }
-.js .mf-reveal:not(.is-in) {
+.mf-reveal[data-reveal='pending'] {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(16px);
 }
 
 /* Staggered variant: the container stays put; its children cascade in
-   80ms apart. Used on the hero (as a load entrance) and on key sections. */
-.js .mf-reveal.mf-stagger:not(.is-in) {
+   80ms apart. */
+.mf-stagger[data-reveal='pending'] {
   opacity: 1;
   transform: none;
 }
-.js .mf-stagger > * {
+.mf-stagger[data-reveal] > * {
   transition:
-    opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
-  transition-delay: calc(var(--st, 0) * 80ms);
+    opacity 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: calc(var(--st, 0) * 70ms);
 }
-.js .mf-stagger:not(.is-in) > * {
+.mf-stagger[data-reveal='pending'] > * {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(12px);
 }
-.js .mf-stagger > :nth-child(1) {
+.mf-stagger > :nth-child(1) {
   --st: 0;
 }
-.js .mf-stagger > :nth-child(2) {
+.mf-stagger > :nth-child(2) {
   --st: 1;
 }
-.js .mf-stagger > :nth-child(3) {
+.mf-stagger > :nth-child(3) {
   --st: 2;
 }
-.js .mf-stagger > :nth-child(4) {
+.mf-stagger > :nth-child(4) {
   --st: 3;
 }
-.js .mf-stagger > :nth-child(5) {
+.mf-stagger > :nth-child(5) {
   --st: 4;
 }
-.js .mf-stagger > :nth-child(6) {
+.mf-stagger > :nth-child(6) {
   --st: 5;
 }
 
-/* Route transitions: a quiet fade-up on navigation. */
+/* Route transitions: a quiet fade-up on navigation. Skipped on pages that
+   run their own coordinated entrance (see .mf-route-own), so the page-level
+   fade never competes with a hero/opening cascade as a second start. */
 .mf-route {
   animation: mf-route-in 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.mf-route-own {
+  animation: none;
 }
 @keyframes mf-route-in {
   from {
@@ -1551,18 +2275,18 @@
   html {
     scroll-behavior: auto;
   }
-  .js .mf-reveal {
+  .mf-reveal[data-reveal] {
     transition: none;
     will-change: auto;
   }
-  .js .mf-reveal:not(.is-in) {
+  .mf-reveal[data-reveal='pending'] {
     opacity: 1;
     transform: none;
   }
-  .js .mf-stagger > * {
+  .mf-stagger[data-reveal] > * {
     transition: none;
   }
-  .js .mf-stagger:not(.is-in) > * {
+  .mf-stagger[data-reveal='pending'] > * {
     opacity: 1;
     transform: none;
   }
@@ -1575,7 +2299,660 @@
   }
   .mf-shot,
   .mf-arrow,
-  .mf-arrow-lg {
+  .mf-arrow-lg,
+  .mf-shot-hover {
     transition: none;
   }
+  .mf-shot-hover:hover {
+    transform: none;
+  }
+  .mf-hero-title .mf-em {
+    animation: none;
+  }
+}
+
+/* ── /v2, the one-page portfolio ─────────────────────────────────────
+   A restructure, not a redesign: reuses the existing tokens and type
+   roles. Exactly three things animate on this page, all on the shared
+   easing and duration tokens: the hero headline (once per full load),
+   the Cicla phase-world transition, and the experience row previews. */
+.mfv2 .mf-hero-title .mf-em {
+  animation: none;
+}
+/* Hero: the whole block cascades once per full load (name, role,
+   headline, subline, links), and the word "feel" resolves last at
+   about 760ms. Skipped under reduced motion via the module flag. */
+/* Hero cascade matched exactly to cicla_web: 28px, 760ms, ~120ms stagger.
+   The accent word rides its headline block (no separate, faster animation),
+   as it does on cicla_web. */
+.mfv2.mfv2-hero-in .mfv2-hero-seq > * {
+  animation: mfv2-hero-line 760ms var(--mf-ease) both;
+}
+.mfv2.mfv2-hero-in .mfv2-hero-seq > :nth-child(2) {
+  animation-delay: 120ms;
+}
+.mfv2.mfv2-hero-in .mfv2-hero-seq > :nth-child(3) {
+  animation-delay: 240ms;
+}
+.mfv2.mfv2-hero-in .mfv2-hero-seq > :nth-child(4) {
+  animation-delay: 360ms;
+}
+.mfv2.mfv2-hero-in .mfv2-hero-seq > :nth-child(5) {
+  animation-delay: 480ms;
+}
+@keyframes mfv2-hero-line {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+@keyframes mfv2-hero-em {
+  from {
+    opacity: 0;
+    transform: translateY(0.15em);
+  }
+}
+.mfv2-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.mfv2-role {
+  margin-top: 0.35rem;
+  font-size: 1rem;
+}
+.mfv2 .mf-hero-title {
+  margin-top: 0;
+}
+.mfv2-hero-links {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1rem;
+  row-gap: 0.75rem;
+  font-size: 1rem;
+}
+.mfv2-sep {
+  color: var(--mf-dim);
+}
+/* Every section shares the Experience grid: label column left, same
+   width as the dates column, content right. */
+.mfv2-sec {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+@media (min-width: 40rem) {
+  .mfv2-sec {
+    grid-template-columns: 10rem minmax(0, 1fr);
+    column-gap: 2rem;
+  }
+}
+/* Section entry: label and heading rise 12px and fade once, 400ms. */
+.mfv2-rise[data-reveal] {
+  transition:
+    opacity 400ms var(--mf-ease),
+    transform 400ms var(--mf-ease);
+}
+.mfv2-rise[data-reveal='pending'] {
+  opacity: 0;
+  transform: translateY(12px);
+}
+/* Nav active-section indicator: slides between anchor links. */
+.mfv2-nav-links {
+  position: relative;
+}
+.mfv2-nav-ind {
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 1.5px;
+  background: var(--mf-accent);
+  transition:
+    transform var(--mf-dur-1) var(--mf-ease),
+    width var(--mf-dur-1) var(--mf-ease),
+    opacity var(--mf-dur-1) var(--mf-ease);
+}
+
+/* Cicla: the card is the phase world of the inspected day, on the
+   app's 0.3s ease. Content-sized: disc left, text right, centred. */
+.mfv2-card {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  justify-items: start;
+  border-radius: 0.75rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  color: #fff;
+  transition: background var(--mf-dur-2) var(--mf-ease);
+}
+@media (min-width: 64rem) {
+  .mfv2-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 2.75rem;
+  }
+}
+.mfv2-card-text > :first-child {
+  margin-top: 0;
+}
+.mfv2-disc-wrap {
+  margin-top: 0;
+}
+.mfv2-nudge {
+  margin: 0;
+  max-width: 34rem;
+  font-family: 'Satoshi', 'Inter', ui-sans-serif, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #fff;
+}
+.mfv2-cicla-line {
+  margin-top: 1.25rem;
+  color: #fff;
+}
+.mfv2-links {
+  margin: 1.75rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 2rem;
+  row-gap: 1rem;
+  font-size: 1rem;
+}
+.mfv2-world-link {
+  color: #fff;
+  font-weight: 500;
+  padding-bottom: 2px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.45);
+}
+.mfv2-world-link:hover {
+  border-bottom-color: #fff;
+}
+.mfv2-world-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.mfv2-world-arrow {
+  display: inline-block;
+  transition: transform var(--mf-dur-1) var(--mf-ease);
+}
+.mfv2-world-link:hover .mfv2-world-arrow {
+  transform: translateX(3px);
+}
+/* The nudge hands over when the phase world changes. */
+.mfv2-nudge-in {
+  animation: mfv2-nudge-in var(--mf-dur-2) var(--mf-ease);
+}
+@keyframes mfv2-nudge-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Lab: title and one-liner sit above the demo in the content column. */
+.mfv2-lab-line {
+  margin-top: 1rem;
+}
+.mfv2-lab-demo {
+  margin-top: 1.5rem;
+  max-width: 42rem;
+}
+.mfv2-source-btn {
+  margin-top: 1.25rem;
+}
+
+/* Experience: muted dates left, content right; the row lifts on hover
+   or focus, the date turns to ink, and a preview slides in when an
+   asset exists in /public/experience/. */
+.mfv2-xp {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+/* Rows below an opening row shift inside the section (the spacer at
+   the end absorbs the height), so they must never be scroll anchors:
+   anchoring to one would scroll the whole page to keep it still. */
+.mfv2-xp,
+.mfv2-xp * {
+  overflow-anchor: none;
+}
+.mfv2-xp-row {
+  position: relative;
+  display: grid;
+  gap: 0.4rem;
+  align-items: start;
+  cursor: pointer;
+  transition: transform var(--mf-dur-1) var(--mf-ease);
+}
+.mfv2-xp-row:hover,
+.mfv2-xp-row:focus-within {
+  transform: translateY(-2px);
+}
+@media (min-width: 40rem) {
+  .mfv2-xp-row {
+    grid-template-columns: 10rem minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+.mfv2-xp-dates {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  font-variant-numeric: tabular-nums;
+  color: var(--mf-dim);
+  transition: color var(--mf-dur-1) var(--mf-ease);
+}
+.mfv2-xp-row:hover .mfv2-xp-dates,
+.mfv2-xp-row:focus-within .mfv2-xp-dates {
+  color: var(--mf-text);
+}
+.mfv2-xp-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+.mfv2-xp-link {
+  color: var(--mf-text);
+}
+.mfv2-xp-link:focus-visible {
+  outline: 2px solid var(--mf-accent-deep);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* Slide-down reveal. The panel animates 0fr to 1fr while the single
+   spacer after the last row gives up the same height on the same
+   timeline, so the section height never changes during or after the
+   transition. Closed rows reserve nothing. */
+.mfv2-xp-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--mf-dur-1) var(--mf-ease);
+}
+.mfv2-xp-row[data-active='true'] .mfv2-xp-panel {
+  grid-template-rows: 1fr;
+}
+.mfv2-xp-clip {
+  overflow: hidden;
+  min-height: 0;
+}
+.mfv2-xp-body {
+  margin: 0;
+  padding-top: 0.6rem;
+  max-width: 38rem;
+  font-size: 1rem;
+  line-height: 1.625;
+}
+/* The reserve filler: the list carries a measured min-height (headings +
+   tallest description); this grows to fill the remainder and shrinks by
+   exactly a panel's height as it opens, so the section below never moves. */
+.mfv2-xp-spacer {
+  flex: 1 1 0;
+  min-height: 0;
+}
+.mfv2-xp-preview {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16rem;
+  margin: 0;
+  opacity: 0;
+  transform: translateX(16px);
+  pointer-events: none;
+  transition:
+    opacity var(--mf-dur-1) var(--mf-ease),
+    transform var(--mf-dur-1) var(--mf-ease);
+}
+.mfv2-xp-row:hover .mfv2-xp-preview,
+.mfv2-xp-row:focus-within .mfv2-xp-preview {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.mfv2-xp-preview img {
+  display: block;
+  width: 100%;
+  border-radius: 0.5rem;
+}
+.mfv2-xp-cap {
+  margin-top: 0.4rem;
+  font-size: 0.8125rem;
+  color: var(--mf-dim);
+}
+@media (max-width: 63.99rem) {
+  .mfv2-xp-preview {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mfv2-card,
+  .mfv2-xp-row,
+  .mfv2-xp-dates,
+  .mfv2-xp-preview,
+  .mfv2-world-arrow,
+  .mfv2-nav-ind,
+  .mfv2-xp-panel,
+  .mfv2-xp-spacer {
+    transition: none;
+  }
+  .mfv2-xp-row:hover,
+  .mfv2-xp-row:focus-within {
+    transform: none;
+  }
+  .mfv2-nudge-in {
+    animation: none;
+  }
+  .mfv2-cicla-sec::before {
+    display: none;
+  }
+  .mfv2-rise[data-reveal] {
+    transition: none;
+  }
+  .mfv2-rise[data-reveal='pending'] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   MOTION PASS (2026-09): shared entrances, controlled exhibit
+   sequences, and consistent control feedback. Appended so these
+   win over the earlier ambient loops, which are disabled here. */
+
+/* Retire last pass's permanent loops; exhibit motion is now driven
+   by state (toggle, trace, chapters), never an endless pulse. */
+.mf-cs-arm[data-active='true'] .mf-cs-node-out { animation: none; }
+.mf-cs-diagram .mf-cs-flow { animation: none; }
+.mf-cs-pillar-on { animation: none; }
+.mf-cs-current { display: none; }
+
+/* Entrance on open: the first view of each page cascades in once. */
+/* On-load rise, matched exactly to cicla_web: 28px travel, 760ms, ~120ms
+   stagger, on the shared ease-out curve (--mf-ease). */
+.mf-enter > * { animation: mf-enter-rise 760ms var(--mf-ease) both; }
+.mf-enter > :nth-child(2) { animation-delay: 120ms; }
+.mf-enter > :nth-child(3) { animation-delay: 240ms; }
+.mf-enter > :nth-child(4) { animation-delay: 360ms; }
+.mf-enter > :nth-child(5) { animation-delay: 480ms; }
+.mf-enter > :nth-child(6) { animation-delay: 600ms; }
+@keyframes mf-enter-rise {
+  from { opacity: 0; transform: translateY(28px); }
+}
+/* Two-column openings cascade their inner blocks as well. */
+.mf-enter.mf-case-hero-grid > :first-child > * {
+  animation: mf-enter-rise 760ms var(--mf-ease) both;
+}
+.mf-enter.mf-case-hero-grid > :first-child > :nth-child(2) { animation-delay: 120ms; }
+.mf-enter.mf-case-hero-grid > :first-child > :nth-child(3) { animation-delay: 240ms; }
+
+
+/* Coordinated scroll reveal: the group holds position; its children
+   rise in sequence when it enters (useReveal sets data-reveal). */
+.mf-reveal.mf-seq { opacity: 1; transform: none; }
+.mf-seq[data-reveal='pending'] { opacity: 1; transform: none; }
+.mf-seq[data-reveal] > * {
+  transition:
+    opacity 600ms var(--mf-ease),
+    transform 600ms var(--mf-ease);
+}
+.mf-seq[data-reveal='pending'] > * { opacity: 0; transform: translateY(20px); }
+.mf-seq[data-reveal] > :nth-child(2) { transition-delay: 80ms; }
+.mf-seq[data-reveal] > :nth-child(3) { transition-delay: 160ms; }
+.mf-seq[data-reveal] > :nth-child(4) { transition-delay: 240ms; }
+.mf-seq[data-reveal] > :nth-child(5) { transition-delay: 320ms; }
+.mf-seq[data-reveal] > :nth-child(6) { transition-delay: 400ms; }
+
+/* Animated disclosure: grid-rows 0fr->1fr, with a + that becomes -. */
+.mf-disc { border-top: 1px solid var(--mf-border); margin-top: 2rem; }
+.mf-lab-disc { border-top: 0; margin-top: 1.25rem; }
+.mf-disc-summary {
+  display: flex; align-items: center; gap: 0.5rem;
+  width: 100%; padding: 1rem 0;
+  border: 0; background: transparent; cursor: pointer; text-align: left;
+  font: inherit; font-size: 0.9rem; font-weight: 600; color: var(--mf-accent-deep);
+}
+.mf-disc-summary:focus-visible { outline: 2px solid var(--mf-accent-deep); outline-offset: 3px; border-radius: 2px; }
+.mf-disc-mark { position: relative; flex: none; width: 0.72rem; height: 0.72rem; }
+.mf-disc-mark::before, .mf-disc-mark::after { content: ''; position: absolute; background: var(--mf-accent); }
+.mf-disc-mark::before { left: 0; right: 0; top: 50%; height: 1.6px; margin-top: -0.8px; }
+.mf-disc-mark::after {
+  top: 0; bottom: 0; left: 50%; width: 1.6px; margin-left: -0.8px;
+  transition: transform var(--mf-dur-2) var(--mf-ease);
+}
+.mf-disc[data-open='true'] .mf-disc-mark::after { transform: scaleY(0); }
+.mf-disc-region { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--mf-dur-2) var(--mf-ease); }
+.mf-disc[data-open='true'] .mf-disc-region { grid-template-rows: 1fr; }
+.mf-disc-inner { overflow: hidden; min-height: 0; }
+
+/* Chapter 2 flowchart: the trace lights nodes and reveals the output. */
+.mf-cs-arch-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.mf-cs-replay {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  border: 1px solid var(--mf-accent-deep); border-radius: 999px;
+  background: transparent; color: var(--mf-accent-deep); cursor: pointer;
+  padding: 0.4rem 0.85rem; font: inherit; font-size: 0.8rem; font-weight: 600;
+  transition:
+    background var(--mf-dur-1) var(--mf-ease),
+    color var(--mf-dur-1) var(--mf-ease),
+    transform var(--mf-dur-1) var(--mf-ease);
+}
+.mf-cs-replay:hover { background: var(--mf-accent-deep); color: #fff; }
+.mf-cs-replay:active { transform: translateY(1px); }
+.mf-cs-replay:focus-visible { outline: 2px solid var(--mf-accent-deep); outline-offset: 3px; }
+.mf-cs-replay-icon { transition: transform var(--mf-dur-3) var(--mf-ease); }
+.mf-cs-replay:hover .mf-cs-replay-icon { transform: rotate(-180deg); }
+.mf-cs-flowchart { display: flex; flex-direction: column; align-items: center; gap: 0.55rem; margin-top: 1rem; }
+.mf-cs-fnode {
+  text-align: center; font-size: 0.9rem; font-weight: 600;
+  padding: 0.55rem 0.9rem; border: 1px solid var(--mf-border); border-radius: 0.6rem;
+  background: var(--mf-bg); color: var(--mf-muted);
+  transition:
+    border-color var(--mf-dur-2) var(--mf-ease),
+    color var(--mf-dur-2) var(--mf-ease),
+    box-shadow var(--mf-dur-2) var(--mf-ease);
+}
+.mf-cs-fnode.is-lit { border-color: var(--mf-accent-deep); color: var(--mf-text); box-shadow: 0 0 0 3px rgba(139, 110, 72, 0.14); }
+.mf-cs-fsub { display: block; margin-top: 0.15rem; font-size: 0.72rem; font-weight: 400; color: var(--mf-dim); }
+.mf-cs-fdown { font-size: 0.78rem; color: var(--mf-dim); transition: color var(--mf-dur-2) var(--mf-ease); }
+.mf-cs-fdown.is-lit { color: var(--mf-accent); }
+.mf-cs-pillar { transition: background var(--mf-dur-2) var(--mf-ease), color var(--mf-dur-2) var(--mf-ease), border-color var(--mf-dur-2) var(--mf-ease), transform var(--mf-dur-2) var(--mf-ease); }
+.mf-cs-pillar.is-fed { transform: translateY(-2px); }
+.mf-cs-pillar.is-lit { background: var(--mf-accent-deep); color: #fff; border-color: var(--mf-accent-deep); }
+.mf-cs-foutput {
+  text-align: center; max-width: 24rem; font-size: 0.92rem; color: var(--mf-text);
+  padding: 0.6rem 0.85rem; border: 1px dashed var(--mf-border); border-radius: 0.6rem;
+  opacity: 0; transform: translateY(10px);
+  transition:
+    opacity var(--mf-dur-3) var(--mf-ease),
+    transform var(--mf-dur-3) var(--mf-ease),
+    border-color var(--mf-dur-2) var(--mf-ease);
+}
+.mf-cs-foutput.is-shown { opacity: 1; transform: none; border-color: var(--mf-accent); }
+
+/* Fasting chapter controls. */
+.mf-cs-chapters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.mf-cs-chapter {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  border: 1px solid var(--mf-border); border-radius: 999px; background: var(--mf-bg-soft);
+  padding: 0.4rem 0.8rem; font: inherit; font-size: 0.8rem; font-weight: 500; color: var(--mf-muted);
+  cursor: pointer;
+  transition:
+    background var(--mf-dur-1) var(--mf-ease),
+    color var(--mf-dur-1) var(--mf-ease),
+    border-color var(--mf-dur-1) var(--mf-ease),
+    transform var(--mf-dur-1) var(--mf-ease);
+}
+.mf-cs-chapter:hover { border-color: var(--mf-accent); color: var(--mf-text); }
+.mf-cs-chapter:active { transform: translateY(1px); }
+.mf-cs-chapter:focus-visible { outline: 2px solid var(--mf-accent-deep); outline-offset: 2px; }
+.mf-cs-chapter[aria-pressed='true'] { background: var(--mf-accent-deep); color: #fff; border-color: var(--mf-accent-deep); }
+.mf-cs-chapter-dot { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: currentColor; opacity: 0.55; }
+.mf-cs-chapter[aria-pressed='true'] .mf-cs-chapter-dot { opacity: 1; }
+
+/* CycleDisc affordance + focus on /v2. */
+.mfv2-disc-hint { margin: 0.75rem auto 0; max-width: 20rem; font-size: 0.8rem; line-height: 1.5; color: rgba(255, 255, 255, 0.82); }
+.mfv2-disc-wrap canvas { border-radius: 50%; }
+.mfv2-disc-wrap canvas:focus-visible { outline: 2px solid #fff; outline-offset: 6px; }
+
+/* Consistent pressed / focus feedback on controls. */
+.mf-cta { transition: transform var(--mf-dur-1) var(--mf-ease); }
+.mf-cta:active { transform: translateY(1px); }
+.mf-link:active, .mfv2-world-link:active { transform: translateY(1px); }
+.mf-lab-chip { transition: background var(--mf-dur-1) var(--mf-ease), border-color var(--mf-dur-1) var(--mf-ease), transform var(--mf-dur-1) var(--mf-ease); }
+.mf-lab-chip:hover { border-color: var(--mf-accent); }
+.mf-lab-chip:active { transform: translateY(1px); }
+.mf-lab-chip:focus-visible { outline: 2px solid var(--mf-accent-deep); outline-offset: 2px; }
+.mf-shotlink img { transition: transform var(--mf-dur-2) var(--mf-ease), box-shadow var(--mf-dur-2) var(--mf-ease); }
+.mf-shotlink:hover img { transform: translateY(-4px); box-shadow: 0 24px 48px rgba(26, 23, 20, 0.18); }
+.mf-shotlink:focus-visible { outline: 2px solid var(--mf-accent-deep); outline-offset: 4px; border-radius: 0.6rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mf-enter > *,
+  .mf-enter.mf-case-hero-grid > :first-child > * { animation: none; }
+  .mf-seq[data-reveal] > * { transition: none; }
+  .mf-seq[data-reveal='pending'] > * { opacity: 1; transform: none; }
+  .mf-disc-region, .mf-disc-mark::after { transition: none; }
+  .mf-cs-fnode, .mf-cs-fdown, .mf-cs-foutput, .mf-cs-pillar { transition: none; }
+  .mf-cs-pillar.is-fed { transform: none; }
+  .mf-cs-replay, .mf-cs-replay-icon, .mf-cs-chapter,
+  .mf-cta, .mf-link, .mfv2-world-link, .mf-lab-chip, .mf-shotlink img { transition: none; }
+  .mf-cs-replay:active, .mf-cs-chapter:active, .mf-cta:active,
+  .mf-link:active, .mfv2-world-link:active, .mf-lab-chip:active { transform: none; }
+  .mf-shotlink:hover img { transform: none; }
+}
+
+/* Chapter 3 (fasting) screenshots read smaller than the Chapter 1 exhibit. */
+.mf-cs-phone-sm {
+  max-width: 240px;
+}
+
+/* ============================================================
+   CONTENT-SCALE PASS (2026-09): refine the scale of the content
+   INSIDE the one-pager's sections at desktop, without touching any
+   section padding, separators, or the vertical rhythm between
+   sections. Everything is scoped to .mfv2 so /cicla, /lab and the
+   legacy pages are unaffected. No zoom, no transform:scale. */
+
+/* HERO — headline was 72px at wide desktop; bring it to ~48px. */
+@media (min-width: 40rem) {
+  .mfv2 .mf-hero-title { font-size: 2.75rem; }
+}
+@media (min-width: 48rem) {
+  .mfv2 .mf-hero-title { font-size: 3rem; line-height: 1.05; }
+}
+.mfv2 .mf-hero-copy { font-size: 1.0625rem; }      /* ~17px supporting copy */
+.mfv2 .mfv2-hero-links { font-size: 0.9375rem; }   /* 15px links */
+
+/* Section eyebrow labels: a small label, not 16px. */
+.mfv2 .mfv2-sec-label { font-size: 0.75rem; letter-spacing: 0.22em; }
+
+/* CICLA CARD — a concise teaser: capped width, tighter padding/gaps,
+   smaller internal type. (The ring itself shrinks via displaySize in
+   HomeV2.tsx, 300 -> 200.) */
+.mfv2 .mfv2-card {
+  max-width: 43rem;                        /* ~688px */
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+}
+@media (min-width: 64rem) {
+  .mfv2 .mfv2-card { gap: 2rem; }
+}
+.mfv2 .mfv2-nudge { font-size: 1rem; max-width: 26rem; }              /* 16px main copy */
+.mfv2 .mfv2-cicla-line { margin-top: 0.75rem; font-size: 0.875rem; } /* 14px supporting */
+.mfv2 .mfv2-links {
+  margin-top: 1rem;
+  column-gap: 1.25rem;
+  row-gap: 0.6rem;
+  font-size: 0.875rem;                     /* 14px links */
+}
+
+/* LAB — compact live experiment, not a giant product panel. */
+.mfv2 .mfv2-lab-demo { max-width: 38rem; }        /* ~608px */
+.mfv2 .mf-title-item { font-size: 1.625rem; }     /* 26px study heading */
+.mfv2 .mfv2-lab-line { font-size: 0.9375rem; }    /* 15px supporting */
+
+/* EXPERIENCE — company names a touch smaller; structure unchanged. */
+.mfv2 .mfv2-xp-title { font-size: 1.125rem; }     /* 18px (from 20px) */
+
+/* ============================================================
+   /cicla CASE-STUDY content-scale pass (2026-09): same refinement
+   as the home one-pager — smaller content inside the sections, with
+   section padding / rhythm untouched. Scoped to .mf-cs-page so /lab,
+   the legacy home and other routes are unaffected. No zoom/scale. */
+
+/* Opening: the "Cicla" wordmark and intro. */
+.mf-cs-page .mf-wordmark-lg { font-size: 2.25rem; }
+@media (min-width: 40rem) {
+  .mf-cs-page .mf-wordmark-lg { font-size: 2.75rem; }   /* 60 -> 44px */
+}
+.mf-cs-page .mf-section-head .mf-lede { font-size: 1.0625rem; } /* 18 -> 17px */
+.mf-cs-page .mf-shot-case { max-height: 452px; }        /* was 400px */
+
+/* Chapter headers: smaller eyebrow number and heading. */
+.mf-cs-head .mf-item-num { font-size: 0.8125rem; }      /* 20 -> 13px */
+@media (min-width: 40rem) {
+  .mf-cs-head .mf-title-item { font-size: 1.625rem; }   /* 30 -> 26px */
+}
+
+/* Exhibit rail + Chapter 1 patterns phone: tighter, smaller. */
+@media (min-width: 56rem) {
+  .mf-cs-page .mf-cs-stage { grid-template-columns: minmax(0, 250px) minmax(0, 1fr); }
+}
+.mf-cs-page .mf-cs-phone { max-width: 250px; }          /* Ch1 300 -> 250 (Ch3 keeps its own 240 via -sm) */
+.mf-cs-page .mf-cs-phone-switch { height: 430px; }      /* was 500px */
+/* Keep the Chapter 3 stills at their established 240px (do not let the
+   Ch1 250px rule enlarge them). */
+.mf-cs-page .mf-cs-phone-sm { max-width: 240px; }
+
+/* Chapter 3 (fasting): the two stills sit on opposite sides — video left
+   (default stage), tracking-only right (flipped stage) — and both smaller. */
+.mf-cs-page .mf-cs-phone-sm { max-width: 200px; }
+@media (min-width: 56rem) {
+  .mf-cs-page .mf-cs-stage-flip {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 220px);
+  }
+}
+
+/* Chapter 1 Patterns exhibit: the "Forming"/"Repeated" screens are taller
+   than the fixed toggle frame, so the fixed-height crop was chopping a line
+   of text flat against the rounded corners (looked broken). Soften it with a
+   fade to the page background so the crop reads as intentional. */
+.mf-cs-page .mf-cs-phone-switch {
+  height: 440px;
+}
+.mf-cs-page .mf-cs-phone-switch::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 52px;
+  background: linear-gradient(to bottom, transparent, var(--mf-bg));
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Chapter 1 Patterns exhibit (corrected): both screens are now the same
+   1206x2340 aspect, so show each one in FULL — no fixed-height mid-line
+   crop, no fade shadow. Crossfade is opacity-only (no slide) so switching
+   is smooth, and it only changes on a click (auto-cycle removed in JS). */
+.mf-cs-page .mf-cs-phone-switch {
+  height: auto;
+  aspect-ratio: 1206 / 2340;
+}
+.mf-cs-page .mf-cs-phone-switch::after {
+  content: none;
+}
+.mf-cs-page .mf-cs-phone-switch img {
+  height: 100%;
+  transform: none;
+  transition: opacity var(--mf-dur-2) var(--mf-ease);
 }

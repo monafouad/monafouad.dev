@@ -1,8 +1,66 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Contact, Meta } from '../components'
-import { CICLA_URL, EMAIL, LINKEDIN_URL } from '../content'
+import { CICLA_URL } from '../content'
+import { FlashCompare } from '../components/lab/FlashCompare'
 import { useReveal } from '../useReveal'
+
+/* ── Lab stream ───────────────────────────────────────────────────────
+   A short line that types itself in, inline in the section, once, when
+   it first enters the viewport. A live hint at the streaming study —
+   the full demo lives on /lab. */
+const LAB_LINE =
+  'Streaming, scroll anchoring, partial states, interruption.'
+
+function LabStream() {
+  const hostRef = useRef<HTMLParagraphElement>(null)
+  const [count, setCount] = useState(0)
+  const [playing, setPlaying] = useState(false)
+  const startedRef = useRef(false)
+  const timerRef = useRef(0)
+
+  useEffect(() => {
+    const el = hostRef.current
+    if (!el || !('IntersectionObserver' in globalThis)) {
+      setCount(LAB_LINE.length)
+      return
+    }
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || startedRef.current) return
+        startedRef.current = true
+        if (reduced) setCount(LAB_LINE.length)
+        else setPlaying(true)
+        io.disconnect()
+      },
+      { threshold: 0.6 }
+    )
+    io.observe(el)
+    return () => {
+      io.disconnect()
+      window.clearTimeout(timerRef.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!playing || count >= LAB_LINE.length) return
+    timerRef.current = window.setTimeout(() => {
+      const next = count + 1
+      setCount(next)
+      if (next >= LAB_LINE.length) setPlaying(false)
+    }, 16 + Math.random() * 40)
+    return () => window.clearTimeout(timerRef.current)
+  }, [playing, count])
+
+  return (
+    <p ref={hostRef} className="mf-muted mf-lab-stream" aria-hidden="true">
+      {LAB_LINE.slice(0, count)}
+      {playing && <span className="mf-stream-caret" />}
+    </p>
+  )
+}
 
 function Home() {
   useEffect(() => {
@@ -12,69 +70,25 @@ function Home() {
 
   return (
     <>
-      {/* HERO */}
+      {/* HERO: cascades in on load (mount entrance, not scroll-gated, so the
+          first viewport is never static). Skipped under reduced motion. */}
       <section id="top" className="mf-section mf-section-hero">
-        <div className="mf-reveal mf-stagger mf-shell">
-          <p className="mf-eyebrow">Design Engineer</p>
+        <div className="mf-enter mf-shell">
           <h1 className="mf-h1 mf-hero-title">
             I build the parts of a product
             <br className="mf-hero-br" /> people actually{' '}
             <em className="mf-em">feel</em>.
           </h1>
 
-          {/* DRAFT(mona): AI-domain claim, option B from the drafts. Edit
-              freely; the first two sentences are your original copy. */}
           <p className="mf-muted mf-lede mf-hero-copy">
-            Fifteen years of interface craft. Most recently: Cicla, a
-            cycle-aware iOS product I designed, built, and shipped to
-            TestFlight on my own. Alongside it: AI product interfaces, where
-            streaming, voice, and model output meet an interface that
-            can&rsquo;t assume the answer.
-          </p>
-
-          <div className="mf-hero-links">
-            <a href={`mailto:${EMAIL}`} className="mf-link">
-              {EMAIL}
-            </a>
-            <span aria-hidden="true" className="mf-dot-sep">
-              ●
-            </span>
-            <a href={LINKEDIN_URL} className="mf-link">
-              LinkedIn
-            </a>
-            <span aria-hidden="true" className="mf-dot-sep">
-              ●
-            </span>
-            <a href="/cv" className="mf-link">
-              CV
-            </a>
-          </div>
-
-          <p className="mf-muted mf-hero-status">
-            Zürich · Remote
+            Design engineer working across interfaces, motion and the code
+            that makes them feel right.
           </p>
         </div>
       </section>
 
-      {/* ABOUT */}
-      <section className="mf-soft mf-section mf-section-band">
-        <div className="mf-reveal mf-stagger mf-shell-narrow">
-          <p className="mf-eyebrow">About</p>
-          <p className="mf-statement mf-statement-lg">
-            I work between design and engineering, taking a vague product idea
-            and shipping an interface that{' '}
-            <em className="mf-em">feels right</em>.{' '}
-            <span className="mf-muted">
-              AI is my tooling. The product judgment, the taste, and the hundred
-              small calls that make it cohere are mine.
-            </span>
-          </p>
-
-        </div>
-      </section>
-
-      {/* CICLA, FEATURED TEASER */}
-      <section className="mf-section mf-section-band">
+      {/* CICLA — a concise real-product teaser; /cicla owns the depth */}
+      <section className="mf-section mf-section-band mf-cicla">
         <div className="mf-shell">
           <div className="mf-reveal mf-kicker">
             <p className="mf-eyebrow">Selected work</p>
@@ -87,25 +101,15 @@ function Home() {
               </h2>
 
               <p className="mf-muted mf-lede">
-                A cycle-aware body intelligence app, it reads food, mood,
-                movement, fasting, and HealthKit signals together and
-                interprets what they mean in the moment. Built solo, end to
-                end. Now in TestFlight beta.
+                Cycle-aware iOS product, in TestFlight
               </p>
-
-              <dl className="mf-meta-grid">
-                <Meta label="Role" value="Solo founder & engineer" />
-                <Meta label="Scope" value="Design · Frontend · Backend · AI" />
-                <Meta label="Platform" value="iOS" />
-                <Meta label="Status" value="TestFlight beta" />
-              </dl>
 
               <div className="mf-teaser-actions">
                 <Link
                   to="/cicla"
                   className="mf-accent-deep mf-cta mf-cta-lg"
                 >
-                  <span className="mf-cta-underline">Read the case study</span>
+                  <span className="mf-cta-underline">View case study</span>
                   <span aria-hidden="true" className="mf-arrow-lg mf-accent">
                     →
                   </span>
@@ -124,9 +128,9 @@ function Home() {
 
             <figure className="mf-reveal mf-teaser-figure">
               <img
-                src="/screenshots/home-menstrual.webp"
-                alt="Cicla home screen, day 3, menstrual phase"
-                className="mf-shot mf-screen mf-shot-home"
+                src="/screenshots/home-ovulatory.webp"
+                alt="Cicla home screen in the ovulatory phase: the cycle rings and today's guidance"
+                className="mf-shot mf-screen mf-shot-home mf-shot-hover"
                 loading="lazy"
               />
             </figure>
@@ -134,57 +138,76 @@ function Home() {
         </div>
       </section>
 
-      {/* LAB, supporting evidence */}
+      {/* LAB — the interaction proof, as concise live previews */}
       <section className="mf-rule-top mf-section mf-section-block">
         <div className="mf-shell">
           <div className="mf-reveal mf-stagger">
-            <p className="mf-eyebrow">Lab</p>
-            <h2 className="mf-h3 mf-title-item mf-measure-wide mf-teaser-title">
-              The states nobody <em className="mf-em">builds</em>.
+            <h2 className="mf-wordmark mf-wordmark-lg">
+              Lab
             </h2>
-            {/* DRAFT(mona): trimmed option C, the claim beside its evidence.
-                Edit freely. */}
-            <p className="mf-muted mf-item-copy mf-measure">
-              AI product interfaces are their own discipline: streaming that
-              doesn&rsquo;t jump, output nobody can predict. The Lab is where
-              I work on those states.
+
+            <p className="mf-muted mf-lede mf-measure">
+              Interface experiments and technical studies.
             </p>
-            <div className="mf-teaser-items">
-              <div>
-                <h3 className="mf-ink mf-item-subtitle">
-                  Cicla Interface System
-                </h3>
-                <p className="mf-muted mf-item-blurb">
-                  The production components behind Cicla, documented in
-                  Storybook.
-                </p>
-              </div>
-              <div>
-                <h3 className="mf-ink mf-item-subtitle">
-                  Streaming output that doesn&rsquo;t jump
-                </h3>
-                <p className="mf-muted mf-item-blurb">
-                  Token streaming with consent-based scroll anchoring and
-                  markdown that renders mid-parse.
-                </p>
-              </div>
+          </div>
+
+          <div className="mf-labprev-grid">
+            <div className="mf-reveal mf-labprev">
+              <h3 className="mf-h3 mf-title-item">
+                Streaming output that doesn&rsquo;t jump
+              </h3>
+              <LabStream />
+              <p className="mf-labprev-more">
+                <Link to="/lab" className="mf-textlink mf-cta">
+                  Open the study
+                  <span aria-hidden="true" className="mf-arrow">
+                    →
+                  </span>
+                </Link>
+              </p>
             </div>
-            <div className="mf-teaser-more">
-              <Link
-                to="/lab"
-                className="mf-textlink mf-cta mf-cta-lg"
-              >
-                Everything in the Lab
-                <span aria-hidden="true" className="mf-arrow">
-                  →
-                </span>
-              </Link>
+
+            <div className="mf-reveal mf-labprev">
+              <h3 className="mf-h3 mf-title-item">
+                A phase atmosphere that never flashes
+              </h3>
+              <div className="mf-labprev-demo">
+                <FlashCompare />
+              </div>
+              <p className="mf-labprev-more">
+                <Link to="/cicla" className="mf-textlink mf-cta">
+                  See it in the case study
+                  <span aria-hidden="true" className="mf-arrow">
+                    →
+                  </span>
+                </Link>
+              </p>
             </div>
+          </div>
+
+          <div className="mf-reveal mf-teaser-more">
+            <Link
+              to="/lab"
+              className="mf-accent-deep mf-cta mf-cta-lg"
+            >
+              <span className="mf-cta-underline">Explore the Lab</span>
+              <span aria-hidden="true" className="mf-arrow-lg mf-accent">
+                →
+              </span>
+            </Link>
           </div>
         </div>
       </section>
 
-      <Contact />
+      {/* Earlier work: provenance only, one quiet line */}
+      <section className="mf-rule-top mf-section mf-section-slim">
+        <div className="mf-shell">
+          <p className="mf-dim mf-earlier">
+            Earlier product work across PHOENIQS, White Hat Gaming,
+            Suntransfers, Lastminute and Delectatech.
+          </p>
+        </div>
+      </section>
     </>
   )
 }
