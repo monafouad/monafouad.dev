@@ -47,7 +47,14 @@ function MiniScreen({ state }: { readonly state: PanelPhase }) {
  * Under prefers-reduced-motion the two first-paint states render
  * statically.
  */
-export function FlashCompare() {
+export function FlashCompare({
+  captions = true,
+  concise = false,
+}: {
+  readonly captions?: boolean
+  /** One-sentence captions for pages that keep the copy tight. */
+  readonly concise?: boolean
+}) {
   const [reduced, setReduced] = useState(
     () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
   )
@@ -83,20 +90,40 @@ export function FlashCompare() {
     )
   }
 
-  const naiveCaption = (
+  const naiveCaption = captions ? (
     <figcaption className="mf-flash-cap">
-      <strong>Naive:</strong> mounts on the follicular loading default, then
-      corrects to menstrual when her data resolves. That correction is the
-      flash: a world she was never in.
+      {concise ? (
+        <>
+          <strong>Naive:</strong> mounts on the follicular loading default
+          and corrects late, flashing a world she was never in.
+        </>
+      ) : (
+        <>
+          <strong>Naive:</strong> mounts on the follicular loading default,
+          then corrects to menstrual when her data resolves. That correction
+          is the flash: a world she was never in.
+        </>
+      )}
     </figcaption>
-  )
-  const fixedCaption = (
+  ) : null
+  const fixedCaption = captions ? (
     <figcaption className="mf-flash-cap">
-      <strong>Resolved before paint:</strong> the luteal atmosphere she was
-      already looking at holds until the phase is known, so the first new
-      paint is already correct. Nothing she was never in ever appears.
+      {concise ? (
+        <>
+          <strong>Resolved before paint:</strong> the luteal atmosphere she
+          was already looking at holds until her phase is known, so the
+          first new paint is already correct.
+        </>
+      ) : (
+        <>
+          <strong>Resolved before paint:</strong> the luteal atmosphere she
+          was already looking at holds until the phase is known, so the
+          first new paint is already correct. Nothing she was never in ever
+          appears.
+        </>
+      )}
     </figcaption>
-  )
+  ) : null
 
   if (reduced) {
     return (

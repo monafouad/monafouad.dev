@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { ContactPanel } from './components/ContactPanel'
 import { EMAIL, LINKEDIN_URL } from './content'
 import About from './pages/About'
 import Cicla from './pages/Cicla'
 import GuidanceNote from './pages/GuidanceNote'
-import Home from './pages/Home'
+import HomeV2 from './pages/HomeV2'
 import Lab from './pages/Lab'
 import Notes from './pages/Notes'
 
@@ -22,11 +22,21 @@ function ScrollToTop() {
 function App() {
   const { pathname } = useLocation()
   const [contactOpen, setContactOpen] = useState(false)
+  /* The one-page portfolio home and its Cicla read-more page bring their
+     own nav and footer, so the shared shell chrome is skipped for those
+     routes. (/v2 only ever redirects to /.) */
+  const isV2 =
+    pathname === '/' || pathname === '/cicla' || pathname === '/v2'
+  /* Pages that carry their own coordinated entrance (the home hero
+     cascade, the Cicla/Lab openings) must not also run the route-level
+     fade, or the two independent entrances read as a double start. */
+  const ownEntrance = isV2 || pathname === '/lab'
   return (
     <div className="mf-page">
       <ScrollToTop />
 
       {/* NAV */}
+      {!isV2 && (
       <nav className="mf-nav">
         <div className="mf-shell mf-nav-row">
           <Link to="/" className="mf-ink mf-nav-brand">
@@ -55,13 +65,23 @@ function App() {
           </div>
         </div>
       </nav>
+      )}
 
-      <ContactPanel open={contactOpen} onClose={() => setContactOpen(false)} />
+      {!isV2 && (
+        <ContactPanel
+          open={contactOpen}
+          onClose={() => setContactOpen(false)}
+        />
+      )}
 
       {/* Keyed by path: each page enters with a quiet fade-up. */}
-      <div key={pathname} className="mf-route">
+      <div
+        key={pathname}
+        className={ownEntrance ? 'mf-route mf-route-own' : 'mf-route'}
+      >
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<HomeV2 />} />
+          <Route path="/v2" element={<Navigate to="/" replace />} />
           <Route path="/cicla" element={<Cicla />} />
           <Route path="/about" element={<About />} />
           <Route path="/notes" element={<Notes />} />
@@ -70,16 +90,17 @@ function App() {
             element={<GuidanceNote />}
           />
           <Route path="/lab" element={<Lab />} />
-          <Route path="*" element={<Home />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 
       {/* FOOTER */}
+      {!isV2 && (
       <footer className="mf-footer">
         <div className="mf-shell mf-footer-row">
           <span>Mona Fouad · Zürich</span>
           <span>
-            Frontend engineering, interface systems, and AI product
+            Design engineering, interfaces, motion, and AI product
             development.
           </span>
           <span className="mf-footer-links">
@@ -94,6 +115,7 @@ function App() {
           </span>
         </div>
       </footer>
+      )}
     </div>
   )
 }

@@ -1,22 +1,24 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Contact } from '../components'
 import { CICLA_UI_URL } from '../content'
 import { StreamingReply } from '../components/lab/StreamingReply'
 import streamingSource from '../components/lab/StreamingReply.tsx?raw'
+import { PhaseWorlds } from '../components/cicla/PhaseWorlds'
+import phaseWorldsSource from '../components/cicla/PhaseWorlds.tsx?raw'
 import { useReveal } from '../useReveal'
+import { Disclosure } from '../components/Disclosure'
 
 function Lab() {
   useEffect(() => {
     document.title = 'Lab · Mona Fouad'
   }, [])
   useReveal()
-  const [sourceOpen, setSourceOpen] = useState(false)
 
   return (
     <>
       <section className="mf-section mf-section-intro">
         <div className="mf-shell">
-          <div className="mf-reveal">
+          <div className="mf-enter">
             <p className="mf-eyebrow">Lab</p>
             <h1 className="mf-h1 mf-title-display mf-measure-max mf-lab-title">
               The states nobody <em className="mf-em">builds</em>.
@@ -35,21 +37,22 @@ function Lab() {
       {/* 01 · Cicla Interface System */}
       <section className="mf-rule-top mf-section mf-section-item">
         <div className="mf-shell">
-          <div className="mf-item-grid">
-            <div className="mf-reveal">
+          <div className="mf-item-grid mf-reveal mf-seq">
+            <div>
               <p className="mf-num mf-item-num">01</p>
               <h2 className="mf-h3 mf-title-item">
                 Cicla Interface System
               </h2>
               <p className="mf-muted mf-item-copy">
-                The production components and interface rules behind Cicla,
+                A snapshot of Cicla&rsquo;s interface components and rules,
                 documented as an interactive system. Explore semantic phase
                 contracts, resilient component states, keyboard behaviour,
                 accessibility checks and the foundations designed for use by
                 both developers and AI agents.
               </p>
               <p className="mf-dim mf-item-note">
-                Production system · components shipped in Cicla
+                A point-in-time snapshot of Cicla&rsquo;s production interface
+                components, captured in August 2026
               </p>
               <a
                 href={CICLA_UI_URL}
@@ -66,7 +69,7 @@ function Lab() {
                 <span className="mf-sr-only">(opens in a new tab)</span>
               </a>
             </div>
-            <div className="mf-reveal mf-item-demo">
+            <div className="mf-item-demo">
               <a
                 href={CICLA_UI_URL}
                 target="_blank"
@@ -91,8 +94,8 @@ function Lab() {
       {/* 02 · Streaming */}
       <section className="mf-rule-top mf-section mf-section-item">
         <div className="mf-shell">
-          <div className="mf-item-grid">
-            <div className="mf-reveal">
+          <div className="mf-item-grid mf-reveal mf-seq">
+            <div>
               <p className="mf-num mf-item-num">02</p>
               <h2 className="mf-h3 mf-title-item">
                 Streaming output that doesn&rsquo;t jump
@@ -121,27 +124,84 @@ function Lab() {
               <p className="mf-dim mf-item-note">
                 Lab experiment · informed by professional AI interface work
               </p>
-              <button
-                type="button"
-                className="mf-lab-chip mf-item-cta"
-                aria-expanded={sourceOpen}
-                aria-controls="lab-streaming-source"
-                onClick={() => setSourceOpen((v) => !v)}
-              >
-                {sourceOpen ? 'Hide source' : 'View source'}
-              </button>
+              <Disclosure summary="Source" className="mf-item-cta mf-lab-disc">
+                <pre className="mf-code mf-stream-source">
+                  <code>{streamingSource}</code>
+                </pre>
+                <p className="mf-dim mf-micronote">
+                  The component&rsquo;s full source, as built into this page.
+                </p>
+              </Disclosure>
             </div>
-            <div className="mf-reveal mf-item-demo">
-              <StreamingReply />
+            <div className="mf-item-demo">
+              <StreamingReply startInView />
             </div>
           </div>
-          <div id="lab-streaming-source" hidden={!sourceOpen}>
-            <pre className="mf-code mf-stream-source">
-              <code>{streamingSource}</code>
-            </pre>
-            <p className="mf-dim mf-micronote">
-              The component&rsquo;s full source, as built into this page.
-            </p>
+        </div>
+      </section>
+
+      {/* 03 · Four phase worlds */}
+      <section className="mf-rule-top mf-section mf-section-item">
+        <div className="mf-shell">
+          <div className="mf-item-grid mf-reveal mf-seq">
+            <div>
+              <p className="mf-num mf-item-num">03</p>
+              <h2 className="mf-h3 mf-title-item">
+                Four phase worlds, one visual system
+              </h2>
+              <div className="mf-muted mf-item-copy mf-stack-sm">
+                <p>
+                  Cicla&rsquo;s identity is an atmosphere system: four phase
+                  worlds, each a flat surface colour with the same hue a few
+                  shades lighter below one canonical wave. What stays
+                  constant is everything structural — the wave silhouette,
+                  the logotype, the composition, the type pairing. What
+                  changes between worlds is only colour and the phase word.
+                </p>
+                <p>
+                  The handover is the one animated moment — the app itself
+                  never shows it, because a phase changes overnight. Exactly
+                  one atmosphere is drawn at all times: between states its
+                  two tones glide through OKLCH (so the in-betweens stay
+                  believable colours, never the grey valley), the wave dips
+                  gently and settles back into its fixed geometry, and the
+                  phase word hands over in place. It always reads as one
+                  world changing mood, never two worlds sharing the frame.
+                </p>
+                <p>
+                  When the strip first appears it demonstrates the four
+                  worlds once, then stops; from there the pointer owns it —
+                  its horizontal position selects the phase, tap and drag do
+                  the same on touch. The motion is deliberately restrained
+                  to the three things the system actually changes: surface,
+                  wave tone, word.
+                </p>
+                <p>
+                  Traded away: any cycle-day progression (tracking UI is
+                  what every cycle app already shows, and it would turn
+                  brand motion back into product UI), a wave-shaped wipe
+                  between worlds (it put two atmospheres on screen at once
+                  and broke the one-identity reading), and an endless
+                  ambient loop — the demonstration plays once, then waits
+                  for the visitor.
+                </p>
+              </div>
+              <p className="mf-dim mf-item-note">
+                Brand-motion study · colours, wave and type ported from the
+                Cicla app source
+              </p>
+              <Disclosure summary="Source" className="mf-item-cta mf-lab-disc">
+                <pre className="mf-code mf-stream-source">
+                  <code>{phaseWorldsSource}</code>
+                </pre>
+                <p className="mf-dim mf-micronote">
+                  The component&rsquo;s full source, as built into this page.
+                </p>
+              </Disclosure>
+            </div>
+            <div className="mf-item-demo">
+              <PhaseWorlds />
+            </div>
           </div>
         </div>
       </section>

@@ -88,9 +88,16 @@ function MarkdownStream({ text }: { readonly text: string }) {
   )
 }
 
-export function StreamingReply() {
+export function StreamingReply({
+  startInView = false,
+}: {
+  /** Begin streaming when the region enters the viewport instead of on
+      mount, so the demo is seen from its first token. */
+  readonly startInView?: boolean
+} = {}) {
   const [count, setCount] = useState(0)
   const [status, setStatus] = useState<Status>('streaming')
+  const [armed, setArmed] = useState(!startInView)
   const [pinned, setPinned] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
   const pinnedRef = useRef(true)
@@ -104,16 +111,37 @@ export function StreamingReply() {
 
   const text = CHUNKS.slice(0, count).join('')
 
+  // Arm on viewport entry when startInView is set.
+  useEffect(() => {
+    if (armed) return
+    const el = scrollRef.current
+    if (!el || !('IntersectionObserver' in globalThis)) {
+      setArmed(true)
+      return
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setArmed(true)
+          io.disconnect()
+        }
+      },
+      { threshold: 0.4 }
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [armed])
+
   // Drive the stream: one chunk per tick with jitter, like a real model.
   useEffect(() => {
-    if (status !== 'streaming' || count >= CHUNKS.length) return
+    if (!armed || status !== 'streaming' || count >= CHUNKS.length) return
     timerRef.current = window.setTimeout(() => {
       const next = count + 1
       setCount(next)
       if (next >= CHUNKS.length) setStatus('done')
     }, 30 + Math.random() * 80)
     return () => window.clearTimeout(timerRef.current)
-  }, [count, status])
+  }, [armed, count, status])
 
   // Follow the stream only while the reader is at the bottom.
   useEffect(() => {
