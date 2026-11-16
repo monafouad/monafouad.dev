@@ -10,11 +10,14 @@ import type { CiclaPhase } from '../../lib/ciclaPhases'
 import { getPhaseForDay, type CyclePhase } from './ciclaTokens'
 
 /* A faithful port of the real Cicla CycleDisc
-   (cicla_app/src/pages/DevHomeV2/components/CycleDisc.tsx): same
-   canvas geometry, ring radii and stroke taper, phase arc walk, butt
-   caps, RING_HEX colours, dot with phase-tinted halo, day ticks while
-   interacting, Satoshi centre readout, pointer-to-day-and-ring math
-   with midpoint ring bands, and keyboard slider semantics.
+   (cicla_app/src/pages/DevHomeV2/components/CycleDisc.tsx, re-read
+   2026-11-16): same canvas geometry (a 244 space drawn tight to the
+   rings), ring radii and stroke taper, phase arc walk, butt caps, the
+   day-1 boundary gap at 12 o'clock, the projected (lighter) days after
+   today on the outer ring, ring colours from ciclaPhases, dot with
+   phase-tinted halo, day ticks while interacting, the two-level Satoshi
+   centre readout ("cycle day" over the number), pointer-to-day-and-ring
+   math with midpoint ring bands, and keyboard slider semantics.
 
    The app's 1100ms easeOutCubic intro sweep is ported and armed when
    the disc enters the viewport (reduced motion draws complete
@@ -44,11 +47,21 @@ interface Ring {
 /* Outer to inner, exactly the app's taper: current cycle strongest. */
 const RINGS: ReadonlyArray<Ring> = [
   { radius: 108, strokeWidth: 10, alpha: 1 },
-  { radius: 84, strokeWidth: 7, alpha: 0.6 },
-  { radius: 62, strokeWidth: 4, alpha: 0.4 },
+  { radius: 84, strokeWidth: 7, alpha: 0.5 },
+  { radius: 62, strokeWidth: 4, alpha: 0.34 },
 ]
-const SIZE = 260
-const CENTER = 130
+/* The drawing space is tight to the rings (outer stroke 113, dot 116,
+   ticks 120): a 244 square leaves a 2px margin, as in the app. */
+const SIZE = 244
+const CENTER = 122
+/* Day 1 starts at 12 o'clock: a hairline gap of the same visible width on
+   every ring marks where one cycle ends and the next begins. */
+const BOUNDARY_GAP_PX = 2.5
+/* Outer ring only: days after today are a projection at this share of the
+   phase colour; elapsed days keep the full ring colour. */
+const PROJECTED_ALPHA = 0.62
+/* Centre readout and interaction ticks: the app's primary ink. */
+const READOUT_INK = '#F7F6F4'
 
 function computePhaseArcs(
   cycleLength: number
@@ -134,22 +147,47 @@ export function CycleDisc({
     const sweepEnd = baseAngle + progress * Math.PI * 2
 
     ctx.lineCap = 'butt'
-    RINGS.forEach((ring) => {
+    /* The outer ring splits at the end of today: elapsed in full colour,
+       the days still ahead as a quieter projection. */
+    const elapsedEnd = baseAngle + Math.min(cycleDay, cycleLength) * wedgeSpan
+    RINGS.forEach((ring, ringIndex) => {
       ctx.lineWidth = ring.strokeWidth
-      phaseArcsRef.current.forEach((arc) => {
-        const start = baseAngle + (arc.start - 1) * wedgeSpan
-        const fullEnd = baseAngle + arc.end * wedgeSpan
-        const end = Math.min(fullEnd, sweepEnd)
+      const halfGap = BOUNDARY_GAP_PX / 2 / ring.radius
+      const cycleStart = baseAngle + halfGap
+      const cycleEnd = baseAngle + Math.PI * 2 - halfGap
+      const stroke = (
+        arcPhase: CyclePhase,
+        alpha: number,
+        a0: number,
+        a1: number
+      ) => {
+        const start = Math.max(a0, cycleStart)
+        const end = Math.min(a1, cycleEnd, sweepEnd)
         if (end <= start) return
-        ctx.strokeStyle = hexToRgba(phaseToken(arc.phase).ring, ring.alpha)
+        ctx.strokeStyle = hexToRgba(phaseToken(arcPhase).ring, alpha)
         ctx.beginPath()
         ctx.arc(CENTER, CENTER, ring.radius, start, end)
         ctx.stroke()
+      }
+      phaseArcsRef.current.forEach((arc) => {
+        const start = baseAngle + (arc.start - 1) * wedgeSpan
+        const end = baseAngle + arc.end * wedgeSpan
+        if (ringIndex > 0) {
+          stroke(arc.phase, ring.alpha, start, end)
+          return
+        }
+        stroke(arc.phase, ring.alpha, start, Math.min(end, elapsedEnd))
+        stroke(
+          arc.phase,
+          ring.alpha * PROJECTED_ALPHA,
+          Math.max(start, elapsedEnd),
+          end
+        )
       })
     })
 
-    if (isInteracting) {
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)'
+    if (isInteracting && progress >= 1) {
+      ctx.strokeStyle = hexToRgba(READOUT_INK, 0.5)
       ctx.lineWidth = 1
       const tickInner = RINGS[0].radius + RINGS[0].strokeWidth / 2 + 3
       const tickOuter = tickInner + 4
@@ -191,18 +229,37 @@ export function CycleDisc({
     ctx.fillStyle = '#ffffff'
     ctx.fill()
 
-    /* Portfolio adaptation: the centre readout follows the marker's
-       selected day (the app anchors it to today), so the readout, the
-       nudge and the card colour always agree. */
-    ctx.fillStyle = '#ffffff'
+    /* The app's two-level readout: a quiet lowercase "cycle day" label over
+       the number, regular weight, sized in visual px (the canvas is drawn
+       at SIZE and scaled to displaySize). Portfolio adaptation: the number
+       follows the marker's selected day (the app anchors it to today), so
+       the readout, the nudge and the card colour always agree. */
+    const sans = "'Satoshi', sans-serif"
+    const toLogical = SIZE / (displaySize ?? SIZE)
+    const labelPx = 12 * toLogical
+    const numberPx = 26 * toLogical
+    const gap = 4 * toLogical
+    const label = 'cycle day'
+    const value = String(selectedDay)
+    const typo = ctx as CanvasRenderingContext2D & { letterSpacing?: string }
     ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.font = '600 18px Satoshi, sans-serif'
-    ctx.fillText(`Day ${selectedDay}`, CENTER, CENTER - 8)
-
-    const labelPx = Math.round(10 * (SIZE / (displaySize ?? SIZE)))
-    ctx.font = `500 ${labelPx}px Satoshi, sans-serif`
-    ctx.fillText(PHASE_LABEL[displayPhase].toUpperCase(), CENTER, CENTER + 10)
+    ctx.textBaseline = 'alphabetic'
+    ctx.font = `400 ${labelPx}px ${sans}`
+    typo.letterSpacing = `${0.06 * labelPx}px`
+    const lm = ctx.measureText(label)
+    const labelAscent = lm.actualBoundingBoxAscent
+    const labelHeight = labelAscent + lm.actualBoundingBoxDescent
+    ctx.font = `400 ${numberPx}px ${sans}`
+    typo.letterSpacing = '0px'
+    const numberAscent = ctx.measureText(value).actualBoundingBoxAscent
+    const top = CENTER - (labelHeight + gap + numberAscent) / 2
+    ctx.fillStyle = READOUT_INK
+    ctx.fillText(value, CENTER, top + labelHeight + gap + numberAscent)
+    ctx.font = `400 ${labelPx}px ${sans}`
+    typo.letterSpacing = `${0.06 * labelPx}px`
+    ctx.fillStyle = hexToRgba(READOUT_INK, 0.8)
+    ctx.fillText(label, CENTER, top + labelAscent)
+    typo.letterSpacing = '0px'
 
     ctx.restore()
   }, [cycleLength, cycleDay, phase, selectedDay, selectedRing, isInteracting, displaySize])
@@ -260,6 +317,18 @@ export function CycleDisc({
     introRafRef.current = requestAnimationFrame(step)
     return () => cancelAnimationFrame(introRafRef.current)
   }, [draw, introArmed])
+
+  /* The canvas rasterises text with whatever face is loaded at draw time;
+     once Satoshi settles, repaint the finished disc (the app does the same). */
+  useEffect(() => {
+    let live = true
+    void document.fonts?.ready.then(() => {
+      if (live && introDoneRef.current) draw(1)
+    })
+    return () => {
+      live = false
+    }
+  }, [draw])
 
   const pointFromPointer = useCallback(
     (

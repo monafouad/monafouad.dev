@@ -1117,10 +1117,10 @@
    inline via color-mix), the rule under the wordmark takes the ring
    colour, and the typographic phase index drives the state. */
 .mf-cicla {
-  /* A constant warm wash of the app's real luteal surface token
-     (cicla_app PHASE_SURFACE.luteal), so the section always reads
+  /* A constant warm wash of the app's real luteal page tone
+     (cicla_app PHASE_COLOURS.luteal.content), so the section always reads
      Cicla; the artwork carries the phase state. */
-  background: color-mix(in srgb, #c35b32 7%, #fbf9f4);
+  background: color-mix(in srgb, #85476a 7%, #fbf9f4);
 }
 /* ── PhaseWorlds (the Cicla brand-motion study) ─────────────────────
    Four real phase atmospheres (flat PHASE_SURFACE + PHASE_SURFACE_LIGHT

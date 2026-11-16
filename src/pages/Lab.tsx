@@ -52,7 +52,7 @@ function Lab() {
               </p>
               <p className="mf-dim mf-item-note">
                 A point-in-time snapshot of Cicla&rsquo;s production interface
-                components, captured in August 2026
+                components, captured in November 2026
               </p>
               <a
                 href={CICLA_UI_URL}
