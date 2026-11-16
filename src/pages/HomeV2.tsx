@@ -25,13 +25,13 @@ import { useReveal } from '../useReveal'
 const CYCLE_DAY = 17
 const CYCLE_LENGTH = 28
 
-/* cicla_app/src/lib/insightSynthesis.ts, baseline variant per phase */
+/* cicla_app/src/lib/insightSynthesis.ts, the first baseline read per
+   phase (re-read 2026-11-16) */
 const NUDGE: Record<CyclePhase, string> = {
   menstrual: 'You’re on your period.',
   follicular:
     'You’re in your follicular stretch, when energy often starts to lift.',
-  ovulatory:
-    'You’re around your ovulatory window, often a higher-energy stretch.',
+  ovulatory: 'You’re in your ovulatory window.',
   luteal: 'You’re in your luteal stretch, the run-up to your period.',
 }
 

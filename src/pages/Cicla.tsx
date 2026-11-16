@@ -593,7 +593,7 @@ function Cicla() {
           </a>
           <p className="mf-dim mf-cs-snapshot">
             A point-in-time snapshot of Cicla&rsquo;s production interface
-            components, captured in August 2026.
+            components, captured in November 2026.
           </p>
         </div>
       </section>
